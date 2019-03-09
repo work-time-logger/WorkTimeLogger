@@ -2,3 +2,5 @@ WorkTimeLoggerFirmwareForESP/cmake-build-debug/
 .DS_Store
 .idea
 /WorkTimeLoggerFirmwareForAtMega328/cmake-build-debug
+/WorkTimeLoggerServer/.phpstorm.meta.php
+/WorkTimeLoggerServer/_ide_helper.php
