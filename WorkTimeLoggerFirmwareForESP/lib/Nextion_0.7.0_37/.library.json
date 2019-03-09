@@ -1,0 +1,31 @@
+{
+    "name": "Nextion", 
+    "keywords": [
+        "display", 
+        "graphics"
+    ], 
+    "description": "Provides an easy-to-use way to manipulate Nextion serial display", 
+    "repository": {
+        "type": "git", 
+        "url": "https://github.com/itead/ITEADLIB_Arduino_Nextion.git"
+    }, 
+    "version": "0.7.0", 
+    "frameworks": [
+        "arduino"
+    ], 
+    "platforms": [
+        "atmelavr"
+    ], 
+    "export": {
+        "exclude": "doc"
+    }, 
+    "authors": [
+        {
+            "email": "git@itead.cc", 
+            "url": "https://github.com/itead", 
+            "maintainer": false, 
+            "name": "ITEAD Studio"
+        }
+    ], 
+    "id": 37
+}

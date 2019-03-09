@@ -1,0 +1,9 @@
+#ifndef CARDREADER_H
+#define CARDREADER_H
+
+#define BUZZER_PIN D0
+
+void CARDREADER_INIT();
+void CARDREADER_EVENT();
+
+#endif //CARDREADER_H

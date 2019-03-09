@@ -1,0 +1,39 @@
+{
+    "name": "msgpack-arduino", 
+    "keywords": [
+        "serialize", 
+        "msgpack"
+    ], 
+    "description": "msgpack-c/c++ for arduino", 
+    "repository": {
+        "type": "git", 
+        "url": "https://github.com/hideakitai/msgpack-arduino.git"
+    }, 
+    "authors": [
+        {
+            "email": null, 
+            "url": "https://github.com/hideakitai", 
+            "maintainer": true, 
+            "name": "Hideaki Tai"
+        }
+    ], 
+    "version": "0.1.0", 
+    "license": "MIT", 
+    "frameworks": [
+        "arduino"
+    ], 
+    "platforms": [
+        "atmelavr", 
+        "atmelsam", 
+        "espressif32", 
+        "espressif8266", 
+        "intel_arc32", 
+        "microchippic32", 
+        "nordicnrf51", 
+        "nordicnrf52", 
+        "ststm32", 
+        "teensy", 
+        "timsp430"
+    ], 
+    "id": 5646
+}
