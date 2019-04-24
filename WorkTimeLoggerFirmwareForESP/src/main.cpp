@@ -89,12 +89,18 @@
 #include <App/CardReader.h>
 #include <App/Workflow.h>
 
+#include <PCF8574.h> // Required for PCF8574
+/** PCF8574 instance */
+PCF8574 expander;
 
 //=======================================================================
 void changeState()
 {
     static int i = 0;
     digitalWrite(LED_BUILTIN, !(digitalRead(LED_BUILTIN)));  //Invert Current State of LED_BUILTIN
+
+    expander.toggle(0);
+//    Serial.println("expander.toggle(0)");
 
     page_stats.show();
 
@@ -105,12 +111,20 @@ void changeState()
 //=======================================================================
 
 
+
 void setup(void)
 {
+    Serial.begin(9600);
+
     Wire.begin();
+//    Serial.println("Wire.begin()");
+    expander.begin(0x20);
+//    Serial.println("expander.begin(0x20)");
+    expander.pinMode(0, OUTPUT);
+//    Serial.println("expander.pinMode(0, OUTPUT)");
 
     pinMode(LED_BUILTIN,OUTPUT);
-    scheduler.attach(5, changeState);
+    scheduler.attach(10, changeState);
 
 
     HMI_INIT();
