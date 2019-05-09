@@ -42,8 +42,13 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'passport',
             'provider' => 'users',
+        ],
+
+        'hardware_api' => [
+            'driver' => 'token',
+            'provider' => 'scanners',
             'hash' => false,
         ],
     ],
@@ -69,6 +74,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+        
+        'scanners' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\HardwareScanner::class,
         ],
 
         // 'users' => [
