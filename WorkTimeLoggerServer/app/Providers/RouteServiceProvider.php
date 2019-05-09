@@ -35,6 +35,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapHardwareApiRoutes();
+        
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
@@ -69,5 +71,20 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Define the "hardware_api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapHardwareApiRoutes()
+    {
+        Route::prefix('hw')
+             ->middleware('hardware_api')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/hardware_api.php'));
     }
 }
