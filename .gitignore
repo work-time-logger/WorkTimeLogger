@@ -4,3 +4,4 @@ WorkTimeLoggerFirmwareForESP/cmake-build-debug/
 /WorkTimeLoggerFirmwareForAtMega328/cmake-build-debug
 /WorkTimeLoggerServer/.phpstorm.meta.php
 /WorkTimeLoggerServer/_ide_helper.php
+/WorkTimeLoggerServer/.vagrant
