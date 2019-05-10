@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0e359c9c32ec173a216e856500edd4c5",
+    "content-hash": "09029afaae726c73edabd43894afe6db",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -2495,6 +2495,68 @@
                 "streaming"
             ],
             "time": "2019-01-01T22:07:02+00:00"
+        },
+        {
+            "name": "sebastiaanluca/laravel-router",
+            "version": "6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastiaanluca/laravel-router.git",
+                "reference": "532c132b0989853b0b36c2a48a04ae67fbea1ac9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastiaanluca/laravel-router/zipball/532c132b0989853b0b36c2a48a04ae67fbea1ac9",
+                "reference": "532c132b0989853b0b36c2a48a04ae67fbea1ac9",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "~5.8.0",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.2.2",
+                "orchestra/testbench": "~3.8.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SebastiaanLuca\\Router\\RouterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SebastiaanLuca\\Router\\": "src"
+                },
+                "files": [
+                    "src/Helpers/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastiaan Luca",
+                    "email": "hello@sebastiaanluca.com",
+                    "homepage": "https://www.sebastiaanluca.com",
+                    "role": "Author"
+                }
+            ],
+            "description": "An organized approach to handling Laravel routes.",
+            "homepage": "https://github.com/sebastiaanluca/laravel-router",
+            "keywords": [
+                "laravel",
+                "laravel-router",
+                "route",
+                "router",
+                "routing"
+            ],
+            "time": "2019-02-27T22:24:19+00:00"
         },
         {
             "name": "spatie/array-to-xml",

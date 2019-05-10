@@ -2,10 +2,25 @@
 
 namespace App\Http;
 
+use SebastiaanLuca\Router\Kernel\RegistersRouters;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
+    use RegistersRouters;
+
+    /**
+     * The application routers to automatically boot.
+     *
+     * @var array
+     */
+    protected $routers = [
+        \SebastiaanLuca\Router\Routers\RegisterRoutePatterns::class,
+        Routers\HardwareApiRouter::class,
+        Routers\ApiRouter::class,
+        Routers\WebRouter::class,
+    ];
+    
     /**
      * The application's global HTTP middleware stack.
      *
