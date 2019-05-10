@@ -4,14 +4,20 @@ php:
   - '7.3'
   - nightly
 
+services:
+  - mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE homestead_test;'
+
 before_script:
   - cd WorkTimeLoggerServer
   - cp .env.travis .env
-  - mysql -e 'create database homestead_test;'
   - composer self-update
   - composer install --no-interaction
+  - phpenv rehash
   - php artisan key:generate
   - php artisan migrate
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --coverage-text
