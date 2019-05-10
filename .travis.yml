@@ -1,7 +1,17 @@
 language: php
 php:
-  - '5.4'
-  - '5.6'
-  - '7.0'
-  - hhvm # on Trusty only
+  - '7.1'
+  - '7.2'
+  - '7.3'
   - nightly
+
+before_script:
+  - cp WorkTimeLoggerServer/.env.travis WorkTimeLoggerServer/.env
+  - mysql -e 'create database homestead_test;'
+  - composer self-update
+  - cd WorkTimeLoggerServer && composer install --no-interaction
+  - cd WorkTimeLoggerServer && php artisan key:generate
+  - cd WorkTimeLoggerServer && php artisan migrate
+
+script:
+  - WorkTimeLoggerServer/vendor/bin/phpunit
