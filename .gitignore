@@ -5,3 +5,5 @@ WorkTimeLoggerFirmwareForESP/cmake-build-debug/
 /WorkTimeLoggerServer/.phpstorm.meta.php
 /WorkTimeLoggerServer/_ide_helper.php
 /WorkTimeLoggerServer/.vagrant
+/WorkTimeLoggerServer/erd_graph.svg
+/WorkTimeLoggerServer/erd_graph.png
