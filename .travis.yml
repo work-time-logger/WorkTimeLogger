@@ -5,12 +5,13 @@ php:
   - nightly
 
 before_script:
-  - cp WorkTimeLoggerServer/.env.travis WorkTimeLoggerServer/.env
+  - cd WorkTimeLoggerServer
+  - cp .env.travis .env
   - mysql -e 'create database homestead_test;'
   - composer self-update
-  - cd WorkTimeLoggerServer && composer install --no-interaction
-  - cd WorkTimeLoggerServer && php artisan key:generate
-  - cd WorkTimeLoggerServer && php artisan migrate
+  - composer install --no-interaction
+  - php artisan key:generate
+  - php artisan migrate
 
 script:
-  - WorkTimeLoggerServer/vendor/bin/phpunit
+  - vendor/bin/phpunit
