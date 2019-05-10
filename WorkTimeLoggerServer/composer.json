@@ -23,6 +23,7 @@
         "beyondcode/dusk-dashboard": "^1.1",
         "beyondcode/laravel-dump-server": "^1.0",
         "beyondcode/laravel-er-diagram-generator": "^1.2",
+        "beyondcode/laravel-query-detector": "^1.0",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
         "laravel/dusk": "^5.1",
