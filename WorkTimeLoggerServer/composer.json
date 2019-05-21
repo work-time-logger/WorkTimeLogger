@@ -81,7 +81,7 @@
         "meta": [
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta",
-            "@php artisan ide-helper:model -W",
+            "@php artisan ide-helper:model -W -R",
             "@php artisan generate:erd erd_graph.svg --format=svg",
             "@php artisan generate:erd erd_graph.png"
         ],
