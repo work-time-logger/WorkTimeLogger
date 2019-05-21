@@ -20,7 +20,7 @@ class CreateEntriesTable extends Migration
             $table->uuid('uuid')->unique();
             $table->timestamp('start')->nullable();
             $table->timestamp('end')->nullable();
-            $table->integer('worked_minutes');
+            $table->integer('worked_minutes')->default(0);
             $table->timestamps();
         });
     }

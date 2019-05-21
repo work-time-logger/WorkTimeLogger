@@ -3,6 +3,7 @@
 namespace App\Domain\Employee\Projectors;
 
 use App\Domain\Employee\Events\EmployeeStoppedWorking;
+use App\Domain\Employee\Events\EmployeeWorkedFor;
 use App\Models\Employee;
 use App\Models\WorkLog\Entry;
 use App\Models\WorkLog\OpenEntry;
@@ -35,15 +36,17 @@ final class WorkLogProjector implements Projector
         $entry->uuid = $event->uuid;
         $entry->start = $open->start;
         $entry->end = $event->carbon();
-        $entry->worked_minutes = $entry->start->diffInMinutes($entry->end);
         
         $employee->Entries()->save($entry);
         $open->delete();
+    }
+
+    public function onEmployeeWorkedFor(EmployeeWorkedFor $event, string $aggregateUuid)
+    {
+        $employee = Employee::uuid($aggregateUuid);
         
-        $summary = $employee->DailySummaries()->firstOrNew([
-            'day' => $open->start->format('Y-m-d')
-        ]);
-        $summary->worked_minutes += $entry->worked_minutes;
-        $summary->save();
+        $entry = Entry::uuid($event->entry_uuid);
+        $entry->worked_minutes += $event->minutes;
+        $entry->save();
     }
 }

@@ -5,6 +5,7 @@ namespace App\Domain\Employee;
 use App\Domain\Employee\Events\EmployeeCreated;
 use App\Domain\Employee\Events\EmployeeStartedWorking;
 use App\Domain\Employee\Events\EmployeeStoppedWorking;
+use App\Domain\Employee\Events\EmployeeWorkedFor;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
 use App\Domain\Employee\Exceptions\CouldNotStartWorking;
 use Spatie\EventProjector\AggregateRoot;
@@ -59,7 +60,11 @@ final class EmployeeAgregate extends AggregateRoot
         if($this->workLog[$uuid]->diffInHours($time, true) >= self::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS)
             throw CouldNotStopWorking::logExpired();
 
+        $start_time = $this->workLog[$uuid];
+
         $this->recordThat(new EmployeeStoppedWorking($uuid, $time));
+        
+        $this->recordThat(new EmployeeWorkedFor($uuid, $start_time->format('Y-m-d'), $start_time->diffInMinutes($time)));
 
         return $this;
     }
