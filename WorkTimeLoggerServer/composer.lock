@@ -1028,12 +1028,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kduma-OSS/L5-eloquent-uuidable.git",
-                "reference": "f7bdaa74d690d47f75be46568a33fda92d8a7832"
+                "reference": "580b7d0e2798fe90bd0594b55548dc601c4a2f80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kduma-OSS/L5-eloquent-uuidable/zipball/f7bdaa74d690d47f75be46568a33fda92d8a7832",
-                "reference": "f7bdaa74d690d47f75be46568a33fda92d8a7832",
+                "url": "https://api.github.com/repos/kduma-OSS/L5-eloquent-uuidable/zipball/580b7d0e2798fe90bd0594b55548dc601c4a2f80",
+                "reference": "580b7d0e2798fe90bd0594b55548dc601c4a2f80",
                 "shasum": ""
             },
             "require": {
@@ -1063,7 +1063,7 @@
                 "laravel",
                 "uuid"
             ],
-            "time": "2019-05-21T17:41:26+00:00"
+            "time": "2019-05-21T17:45:13+00:00"
         },
         {
             "name": "laravel/framework",
