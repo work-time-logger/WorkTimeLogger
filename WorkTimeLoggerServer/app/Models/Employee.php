@@ -19,6 +19,7 @@ use KDuma\Eloquent\Uuidable;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\DailySummary[] $DailySummaries
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\Entry[] $Entries
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\IdCard[] $IdCards
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\OpenEntry[] $OpenEntries
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee newQuery()
