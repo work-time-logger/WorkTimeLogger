@@ -47,25 +47,31 @@ final class EmployeeAgregate extends AggregateRoot
         $this->workLog[$event->uuid] = $event->carbon();
     }
 
-    public function stopWork(string $uuid, Carbon $time = null)
+    public function stopWork(string $uuid, Carbon $end_time = null)
     {
-        $time = $time ?? now();
+        $end_time = $end_time ?? now();
 
         if(!isset($this->workLog[$uuid]))
             throw CouldNotStopWorking::logDoesntExist();
 
-        if($this->workLog[$uuid] > $time)
+        if($this->workLog[$uuid] > $end_time)
             throw CouldNotStopWorking::startIsInFuture();
 
-        if($this->workLog[$uuid]->diffInHours($time, true) >= self::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS)
+        if($this->workLog[$uuid]->diffInHours($end_time, true) >= self::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS)
             throw CouldNotStopWorking::logExpired();
 
         $start_time = $this->workLog[$uuid];
 
-        $this->recordThat(new EmployeeStoppedWorking($uuid, $time));
+        $this->recordThat(new EmployeeStoppedWorking($uuid, $end_time));
         
-        $this->recordThat(new EmployeeWorkedFor($uuid, $start_time->format('Y-m-d'), $start_time->diffInMinutes($time)));
-
+        if($end_time > $start_time->copy()->endOfDay()){
+            $this->recordThat(new EmployeeWorkedFor($uuid, $start_time->format('Y-m-d'), $start_time->diffInMinutes($end_time->copy()->startOfDay())));
+            $this->recordThat(new EmployeeWorkedFor($uuid, $end_time->format('Y-m-d'), $end_time->copy()->startOfDay()->diffInMinutes($end_time)));
+            
+        } else {
+            $this->recordThat(new EmployeeWorkedFor($uuid, $start_time->format('Y-m-d'), $start_time->diffInMinutes($end_time)));
+        }
+        
         return $this;
     }
 

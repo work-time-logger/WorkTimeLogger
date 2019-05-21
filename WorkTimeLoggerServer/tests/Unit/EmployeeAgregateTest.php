@@ -59,7 +59,7 @@ class EmployeeAgregateTest extends TestCase
     {
         $employee_uuid = Str::uuid();
         $entry_uuid = Str::uuid();
-        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp())->startOfMinute();
         $worked_minutes = 60 * 8;
         $end_time = $start_time->copy()->addMinutes($worked_minutes);
 
@@ -231,6 +231,43 @@ class EmployeeAgregateTest extends TestCase
             'employee_id' => $employee->id,
             'day' => $start_time->format('Y-m-d'),
             'worked_minutes' => $worked_minutes + $second_worked_minutes
+        ]);
+    }
+
+    public function testEmployeeCountingSummaryOverNight()
+    {
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp())->setHour(22)->startOfHour();
+        $worked_minutes = 60 * 5;
+        $end_time = $start_time->copy()->addMinutes($worked_minutes);
+
+        EmployeeAgregate::retrieve($employee_uuid)
+            ->createEmployee($this->faker->firstName, $this->faker->lastName)
+            ->startWork($entry_uuid, $start_time)
+            ->stopWork($entry_uuid, $end_time)
+            ->persist();
+
+        $employee = Employee::uuid($employee_uuid);
+
+        $this->assertDatabaseHas('daily_summaries', [
+            'employee_id' => $employee->id,
+            'day' => $start_time->format('Y-m-d'),
+            'worked_minutes' => 2*60
+        ]);
+
+        $this->assertDatabaseHas('daily_summaries', [
+            'employee_id' => $employee->id,
+            'day' => $end_time->format('Y-m-d'),
+            'worked_minutes' => 3*60
+        ]);
+
+        $this->assertDatabaseHas('entries', [
+            'employee_id' => $employee->id,
+            'uuid' => $entry_uuid,
+            'start' => $start_time->format('Y-m-d H:i:s'),
+            'end' => $end_time->format('Y-m-d H:i:s'),
+            'worked_minutes' => $worked_minutes
         ]);
     }
 }
