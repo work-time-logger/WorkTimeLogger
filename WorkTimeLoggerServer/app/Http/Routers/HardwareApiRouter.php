@@ -4,8 +4,9 @@
 namespace App\Http\Routers;
 
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\HardwareApi\PingController;
 use SebastiaanLuca\Router\Routers\Router;
+use Illuminate\Http\Request;
 
 class HardwareApiRouter extends Router
 {
@@ -14,17 +15,9 @@ class HardwareApiRouter extends Router
      */
     public function map(): void 
     {
-        $this->router->group(['middleware' => ['hardware_api'], 'prefix' => 'hw'], function () {
-
-//            $this->router->get('/users', function () {
-//
-//                return view('users.index');
-//
-//            });
+        $this->router->group(['middleware' => ['hardware_api', 'auth:hardware_api'], 'prefix' => 'hw'], function () {
             
-            $this->router->middleware('auth:hardware_api')->get('/ping', function (Request $request) {
-                return $request->user();
-            });
+            $this->router->get('/ping', PingController::class);
 
         });
     }

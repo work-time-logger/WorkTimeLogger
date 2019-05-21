@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5d2601b4cd57afb10ddc04067177176",
+    "content-hash": "893807c5c7c98a397cc5bfb7ea9e5525",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -988,12 +988,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kduma-OSS/L5-content-negotiable-responses.git",
-                "reference": "43127b61431f236335b024042e6713557e3c1e46"
+                "reference": "77fe6363914a27f8f900f1fdad88fa3699a23bb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kduma-OSS/L5-content-negotiable-responses/zipball/43127b61431f236335b024042e6713557e3c1e46",
-                "reference": "43127b61431f236335b024042e6713557e3c1e46",
+                "url": "https://api.github.com/repos/kduma-OSS/L5-content-negotiable-responses/zipball/77fe6363914a27f8f900f1fdad88fa3699a23bb0",
+                "reference": "77fe6363914a27f8f900f1fdad88fa3699a23bb0",
                 "shasum": ""
             },
             "require": {
@@ -1020,7 +1020,50 @@
                 }
             ],
             "description": "Laravel 5 helpers for creating content-type negotiable responses",
-            "time": "2019-05-09T19:24:09+00:00"
+            "time": "2019-05-21T14:14:14+00:00"
+        },
+        {
+            "name": "kduma/eloquent-uuidable",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kduma-OSS/L5-eloquent-uuidable.git",
+                "reference": "ad0177f8bacfba0205a5c9e573840f74de761c3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kduma-OSS/L5-eloquent-uuidable/zipball/ad0177f8bacfba0205a5c9e573840f74de761c3d",
+                "reference": "ad0177f8bacfba0205a5c9e573840f74de761c3d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "ramsey/uuid": "^3.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "KDuma\\Eloquent\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Krystian Duma",
+                    "email": "git@krystian.duma.sh"
+                }
+            ],
+            "description": "Eases using and generating uuid's in Laravel Eloquent models.",
+            "keywords": [
+                "eloquent",
+                "guid",
+                "laravel",
+                "uuid"
+            ],
+            "time": "2018-11-19T19:56:32+00:00"
         },
         {
             "name": "laravel/framework",

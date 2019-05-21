@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 $factory->define(HardwareScanner::class, function (Faker $faker) {
     return [
+        'uuid' => $faker->uuid,
         'api_token' => Str::random(60),
         'name' => $faker->jobTitle,
         'is_active' => $faker->boolean,

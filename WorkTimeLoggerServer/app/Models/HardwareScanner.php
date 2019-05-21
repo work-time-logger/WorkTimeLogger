@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use KDuma\Eloquent\Uuidable;
 
 /**
  * App\Models\HardwareScanner
@@ -26,7 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class HardwareScanner extends Model
 {
-
+    use Uuidable;
+    
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -35,4 +37,23 @@ class HardwareScanner extends Model
     protected $hidden = [
         'api_token',
     ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
 }

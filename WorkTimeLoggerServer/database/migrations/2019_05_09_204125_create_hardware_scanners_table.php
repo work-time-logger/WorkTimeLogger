@@ -15,6 +15,7 @@ class CreateHardwareScannersTable extends Migration
     {
         Schema::create('hardware_scanners', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->uuid('uuid')->unique();
             $table->string('api_token')->unique();
             $table->string('name');
             $table->boolean('is_active');
