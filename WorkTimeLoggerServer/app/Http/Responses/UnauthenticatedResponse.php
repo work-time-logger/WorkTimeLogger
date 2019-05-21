@@ -3,8 +3,6 @@
 namespace App\Http\Responses;
 
 
-use App\Http\Resources\HardwareScannerResource;
-use App\Models\HardwareScanner;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
