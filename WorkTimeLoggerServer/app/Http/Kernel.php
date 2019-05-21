@@ -5,6 +5,9 @@ namespace App\Http;
 use SebastiaanLuca\Router\Kernel\RegistersRouters;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Kernel extends HttpKernel
 {
     use RegistersRouters;

@@ -9,3 +9,4 @@
 # which will be run after this script.
 
 sudo apt-get install graphviz
+sudo phpenmod xdebug
