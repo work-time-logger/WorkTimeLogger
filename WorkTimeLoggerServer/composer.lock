@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "893807c5c7c98a397cc5bfb7ea9e5525",
+    "content-hash": "65d73556fddfbe33749df0314651c5b3",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -988,12 +988,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kduma-OSS/L5-content-negotiable-responses.git",
-                "reference": "77fe6363914a27f8f900f1fdad88fa3699a23bb0"
+                "reference": "50f46e7ff6700b4138099254eb65277dea1ddda3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kduma-OSS/L5-content-negotiable-responses/zipball/77fe6363914a27f8f900f1fdad88fa3699a23bb0",
-                "reference": "77fe6363914a27f8f900f1fdad88fa3699a23bb0",
+                "url": "https://api.github.com/repos/kduma-OSS/L5-content-negotiable-responses/zipball/50f46e7ff6700b4138099254eb65277dea1ddda3",
+                "reference": "50f46e7ff6700b4138099254eb65277dea1ddda3",
                 "shasum": ""
             },
             "require": {
@@ -1020,7 +1020,7 @@
                 }
             ],
             "description": "Laravel 5 helpers for creating content-type negotiable responses",
-            "time": "2019-05-21T14:14:14+00:00"
+            "time": "2019-05-21T15:26:47+00:00"
         },
         {
             "name": "kduma/eloquent-uuidable",
@@ -5089,6 +5089,42 @@
             "time": "2019-01-14T23:55:14+00:00"
         },
         {
+            "name": "kduma/test-response-message-pack-helpers",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "./packages/L5-test-response-message-pack-helpers",
+                "reference": "5f7752f8daa4dc97707e91c1180893917ed6cc2a"
+            },
+            "require": {
+                "ext-json": "*",
+                "rybakit/msgpack": "^0.5.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "KDuma\\TestResponseHelpers\\MessagePackResponseHelpersProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "KDuma\\TestResponseHelpers\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Krystian Duma",
+                    "email": "opensource@krystian.duma.sh"
+                }
+            ],
+            "description": "Laravel 5 TestResponse helpers (Macro's) for asserting MessagePack responses"
+        },
+        {
             "name": "laravel/homestead",
             "version": "v8.4.0",
             "source": {
@@ -6985,7 +7021,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "kduma/content-negotiable-responses": 20
+        "kduma/content-negotiable-responses": 20,
+        "kduma/test-response-message-pack-helpers": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

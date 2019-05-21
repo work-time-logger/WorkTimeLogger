@@ -1,0 +1,28 @@
+{
+    "name": "kduma/test-response-message-pack-helpers",
+    "description": "Laravel 5 TestResponse helpers (Macro's) for asserting MessagePack responses",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Krystian Duma",
+            "email": "opensource@krystian.duma.sh"
+        }
+    ],
+    "require": {
+        "ext-json": "*",
+        "rybakit/msgpack": "^0.5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "KDuma\\TestResponseHelpers\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KDuma\\TestResponseHelpers\\MessagePackResponseHelpersProvider"
+            ]
+        }
+    }
+}
