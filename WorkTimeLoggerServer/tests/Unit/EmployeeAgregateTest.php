@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Domain\Employee\EmployeeAgregate;
+use App\Domain\Employee\Exceptions\CouldNotStartWorking;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
 use App\Models\Employee;
 use DateTime;
@@ -131,5 +132,52 @@ class EmployeeAgregateTest extends TestCase
         $this->expectExceptionMessage("End date cannot be before start date.");
         
         $agregate->stopWork($entry_uuid, $end_time);
+    }
+
+    public function testEmployeeOpeningWorkLogWhileHavingAlreadyOpenedValidEntry()
+    {
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $second_entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
+        $second_start_time = $start_time->copy()->addHour();
+
+        $agregate = EmployeeAgregate::retrieve($employee_uuid)
+            ->createEmployee($this->faker->firstName, $this->faker->lastName)
+            ->startWork($entry_uuid, $start_time);
+        
+        $this->expectException(CouldNotStartWorking::class);
+        $this->expectExceptionMessage("There is valie, already started entry.");
+        
+        $agregate->startWork($second_entry_uuid, $second_start_time);
+    }
+
+    public function testEmployeeOpeningWorkLogWhileHavingAlreadyOpenedInvalidEntry()
+    {
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $second_entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
+        $second_start_time = $start_time->copy()->addDay();
+
+        $agregate = EmployeeAgregate::retrieve($employee_uuid)
+            ->createEmployee($this->faker->firstName, $this->faker->lastName)
+            ->startWork($entry_uuid, $start_time)
+            ->startWork($second_entry_uuid, $second_start_time)
+            ->persist();
+
+        $employee = Employee::uuid($employee_uuid);
+
+        $this->assertDatabaseHas('open_entries', [
+            'employee_id' => $employee->id,
+            'uuid' => $entry_uuid,
+            'start' => $start_time->format('Y-m-d H:i:s'),
+        ]);
+
+        $this->assertDatabaseHas('open_entries', [
+            'employee_id' => $employee->id,
+            'uuid' => $second_entry_uuid,
+            'start' => $second_start_time->format('Y-m-d H:i:s'),
+        ]);
     }
 }

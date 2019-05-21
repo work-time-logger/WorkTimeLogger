@@ -6,12 +6,15 @@ use App\Domain\Employee\Events\EmployeeCreated;
 use App\Domain\Employee\Events\EmployeeStartedWorking;
 use App\Domain\Employee\Events\EmployeeStoppedWorking;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
+use App\Domain\Employee\Exceptions\CouldNotStartWorking;
 use Spatie\EventProjector\AggregateRoot;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 final class EmployeeAgregate extends AggregateRoot
 {
+    const OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS = 12;
+    
     /**
      * @var array|Carbon[]
      */
@@ -26,6 +29,13 @@ final class EmployeeAgregate extends AggregateRoot
 
     public function startWork(string $uuid = null, Carbon $time = null)
     {
+        $valid_entries = collect($this->workLog)->filter(function (Carbon $entry_time) use ($time) {
+            return $entry_time->diffInHours($time, true) < self::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS;
+        });
+
+        if($valid_entries->count())
+            throw CouldNotStartWorking::validEntryAlreadyExist();
+        
         $this->recordThat(new EmployeeStartedWorking($uuid ?? Str::uuid(), $time ?? now()));
 
         return $this;
@@ -46,7 +56,7 @@ final class EmployeeAgregate extends AggregateRoot
         if($this->workLog[$uuid] > $time)
             throw CouldNotStopWorking::startIsInFuture();
 
-        if($this->workLog[$uuid]->diffInHours($time, true) >= 12)
+        if($this->workLog[$uuid]->diffInHours($time, true) >= self::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS)
             throw CouldNotStopWorking::logExpired();
 
         $this->recordThat(new EmployeeStoppedWorking($uuid, $time));
