@@ -180,4 +180,57 @@ class EmployeeAgregateTest extends TestCase
             'start' => $second_start_time->format('Y-m-d H:i:s'),
         ]);
     }
+
+    public function testEmployeeCountingSummary()
+    {
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp())->setHour(10);
+        $worked_minutes = 60 * 3;
+        $end_time = $start_time->copy()->addMinutes($worked_minutes);
+
+        EmployeeAgregate::retrieve($employee_uuid)
+            ->createEmployee($this->faker->firstName, $this->faker->lastName)
+            ->startWork($entry_uuid, $start_time)
+            ->stopWork($entry_uuid, $end_time)
+            ->persist();
+
+        $employee = Employee::uuid($employee_uuid);
+
+        $this->assertDatabaseHas('daily_summaries', [
+            'employee_id' => $employee->id,
+            'day' => $start_time->format('Y-m-d'),
+            'worked_minutes' => $worked_minutes
+        ]);
+    }
+
+    public function testEmployeeCountingSummaryOfMultipleEntries()
+    {
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp())->setHour(10);
+        $worked_minutes = 60 * 3;
+        $end_time = $start_time->copy()->addMinutes($worked_minutes);
+
+        $second_entry_uuid = Str::uuid();
+        $second_start_time = $end_time->copy()->addMinutes(rand(60,120));
+        $second_worked_minutes = 60 * 5;
+        $second_end_time = $second_start_time->copy()->addMinutes($second_worked_minutes);
+
+        EmployeeAgregate::retrieve($employee_uuid)
+            ->createEmployee($this->faker->firstName, $this->faker->lastName)
+            ->startWork($entry_uuid, $start_time)
+            ->stopWork($entry_uuid, $end_time)
+            ->startWork($second_entry_uuid, $second_start_time)
+            ->stopWork($second_entry_uuid, $second_end_time)
+            ->persist();
+
+        $employee = Employee::uuid($employee_uuid);
+
+        $this->assertDatabaseHas('daily_summaries', [
+            'employee_id' => $employee->id,
+            'day' => $start_time->format('Y-m-d'),
+            'worked_minutes' => $worked_minutes + $second_worked_minutes
+        ]);
+    }
 }

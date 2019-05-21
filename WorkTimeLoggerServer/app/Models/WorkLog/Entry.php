@@ -44,6 +44,7 @@ class Entry extends Model
     protected $casts = [
         'start' => 'datetime',
         'end' => 'datetime',
+        'worked_minutes' => 'int',
     ];
 
     public function Employee()

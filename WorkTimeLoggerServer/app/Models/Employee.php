@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\WorkLog\DailySummary;
 use App\Models\WorkLog\Entry;
 use App\Models\WorkLog\OpenEntry;
 use Illuminate\Database\Eloquent\Model;
@@ -36,11 +37,16 @@ class Employee extends Model
 
     public function OpenEntries()
     {
-        return $this->hasMany(OpenEntry::class, 'employee_id');
+        return $this->hasMany(OpenEntry::class, 'employee_id')->latest('start');
     }
 
     public function Entries()
     {
-        return $this->hasMany(Entry::class, 'employee_id');
+        return $this->hasMany(Entry::class, 'employee_id')->latest('start');
+    }
+
+    public function DailySummaries()
+    {
+        return $this->hasMany(DailySummary::class, 'employee_id')->latest('day');
     }
 }

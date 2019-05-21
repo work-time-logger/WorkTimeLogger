@@ -39,5 +39,11 @@ final class WorkLogProjector implements Projector
         
         $employee->Entries()->save($entry);
         $open->delete();
+        
+        $summary = $employee->DailySummaries()->firstOrNew([
+            'day' => $open->start->format('Y-m-d')
+        ]);
+        $summary->worked_minutes += $entry->worked_minutes;
+        $summary->save();
     }
 }
