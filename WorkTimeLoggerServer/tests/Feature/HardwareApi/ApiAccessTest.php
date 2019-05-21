@@ -2,34 +2,75 @@
 
 namespace Tests\Feature\HardwareApi;
 
-use App\Models\HardwareScanner;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\HardwareScanner;
+use Tests\TestCase;
 
 class ApiAccessTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function testPingingEndpointWithoutAuthorizationToken()
+    {
+        $response = $this->get('/hw/ping', [
+                'Accept' => 'application/msgpack',
+        ]);
+
+        $response
+            ->assertStatus(401);
+    }
+
+    public function testPingingEndpointWithInvalidAuthorizationToken()
+    {
+        $scanner = factory(HardwareScanner::class)->make();
+        
+        $response = $this->get('/hw/ping', [
+            'Accept' => 'application/msgpack',
+            'Authorization' => 'Bearer '.$scanner->api_token
+        ]);
+
+        $response
+            ->assertStatus(401);
+    }
     
     public function testPingingEndpointAsAuthenticatedUserUsingJson()
     {
-        $this->withoutExceptionHandling();
+        $scanner = factory(HardwareScanner::class)->states('inactive')->create();
         
-        $scanner = factory(HardwareScanner::class)->states('active')->create();
-        
-        $response = $this->withHeaders([
+        $response = $this->get('/hw/ping', [
             'Accept' => 'application/json',
-        ])->get('/hw/ping', [
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
 
         $response
             ->assertStatus(200)
             ->assertExactJson([
-                'uuid' => $scanner->uuid,
-                'name' => $scanner->name,
-                'is_active' => $scanner->is_active,
+                'data' => [
+                    'uuid' => $scanner->uuid,
+                    'name' => $scanner->name,
+                    'is_active' => $scanner->is_active,
+                ]
+            ]);
+    }
+    
+    public function testPingingEndpointAsAuthenticatedUserUsingMessagePack()
+    {
+        $scanner = factory(HardwareScanner::class)->create();
+        
+        $response = $this->get('/hw/ping', [
+            'Accept' => 'application/msgpack',
+            'Authorization' => 'Bearer '.$scanner->api_token
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertExactMessagePack([
+                'data' => [
+                    'uuid' => $scanner->uuid,
+                    'name' => $scanner->name,
+                    'is_active' => $scanner->is_active,
+                ]
             ]);
     }
 }

@@ -26,6 +26,6 @@ class PingResponse extends BaseArrayResponse
 
     protected function getData()
     {
-        return (new HardwareScannerResource($this->hardwareScanner));
+        return new HardwareScannerResource($this->hardwareScanner);
     }
 }
