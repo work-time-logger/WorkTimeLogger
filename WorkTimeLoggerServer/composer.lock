@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f8f650b39c898b04f3127b9729c9bf4",
+    "content-hash": "6317262c7806116de670632092675043",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -1024,16 +1024,16 @@
         },
         {
             "name": "kduma/eloquent-uuidable",
-            "version": "v1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kduma-OSS/L5-eloquent-uuidable.git",
-                "reference": "ad0177f8bacfba0205a5c9e573840f74de761c3d"
+                "reference": "f7bdaa74d690d47f75be46568a33fda92d8a7832"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kduma-OSS/L5-eloquent-uuidable/zipball/ad0177f8bacfba0205a5c9e573840f74de761c3d",
-                "reference": "ad0177f8bacfba0205a5c9e573840f74de761c3d",
+                "url": "https://api.github.com/repos/kduma-OSS/L5-eloquent-uuidable/zipball/f7bdaa74d690d47f75be46568a33fda92d8a7832",
+                "reference": "f7bdaa74d690d47f75be46568a33fda92d8a7832",
                 "shasum": ""
             },
             "require": {
@@ -1063,7 +1063,7 @@
                 "laravel",
                 "uuid"
             ],
-            "time": "2018-11-19T19:56:32+00:00"
+            "time": "2019-05-21T17:41:26+00:00"
         },
         {
             "name": "laravel/framework",
@@ -7357,6 +7357,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "kduma/content-negotiable-responses": 20,
+        "kduma/eloquent-uuidable": 20,
         "kduma/test-response-message-pack-helpers": 20
     },
     "prefer-stable": true,
