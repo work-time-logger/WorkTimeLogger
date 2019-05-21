@@ -14,7 +14,9 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        $prefers = $request->prefers(['text/html', 'application/msgpack']);
+        
+        if (! $request->expectsJson() && $prefers != 'application/msgpack') {
             return route('login');
         }
     }
