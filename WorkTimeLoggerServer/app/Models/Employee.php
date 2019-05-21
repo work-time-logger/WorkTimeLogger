@@ -17,6 +17,7 @@ use KDuma\Eloquent\Uuidable;
  * @property string $last_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\DailySummary[] $DailySummaries
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\Entry[] $Entries
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\OpenEntry[] $OpenEntries
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee newModelQuery()
