@@ -5,6 +5,7 @@ namespace App\Http\Routers;
 
 
 use App\Http\Controllers\HardwareApi\PingController;
+use App\Http\Controllers\HardwareApi\QueryForCardController;
 use SebastiaanLuca\Router\Routers\Router;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,7 @@ class HardwareApiRouter extends Router
         $this->router->group(['middleware' => ['hardware_api', 'auth:hardware_api'], 'prefix' => 'hw'], function () {
             
             $this->router->get('/ping', PingController::class);
+            $this->router->get('/card/{rfid}', QueryForCardController::class);
 
         });
     }

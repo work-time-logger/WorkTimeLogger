@@ -50,4 +50,9 @@ class Employee extends Model
     {
         return $this->hasMany(DailySummary::class, 'employee_id')->latest('day');
     }
+
+    public function IdCards()
+    {
+        return $this->hasMany(IdCard::class, 'employee_id')->latest('day');
+    }
 }
