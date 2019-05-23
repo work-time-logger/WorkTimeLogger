@@ -27,7 +27,7 @@ class CardQueryResponse extends BaseArrayResponse
             'employee' => $this->employee->uuid,
             'first_name' => $this->employee->first_name,
             'last_name' => $this->employee->last_name,
-            'worked_today' => 0,
+            'worked_today' => $this->getWorkedToday(),
             'open_entry' => $this->getOpenEntry(),
             'has_invalid_entries' => $this->getHasInvalidEntries(),
         ];
@@ -45,10 +45,21 @@ class CardQueryResponse extends BaseArrayResponse
         )->uuid;
     }
 
+    /**
+     * @return bool
+     */
     private function getHasInvalidEntries()
     {
         return !! $this->employee->OpenEntries()
             ->where('start', '<', now()->subHours(EmployeeAgregate::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS))
             ->count();
+    }
+
+    /**
+     * @return int
+     */
+    private function getWorkedToday()
+    {
+        return optional($this->employee->DailySummaries()->where('day', today()->format('Y-m-d'))->first())->worked_minutes ?? 0;
     }
 }

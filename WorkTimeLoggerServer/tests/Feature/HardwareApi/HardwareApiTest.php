@@ -162,6 +162,73 @@ class HardwareApiTest extends TestCase
             ]);
     }
     
+    public function testStartingWorkWithInvalidEntries()
+    {
+        $now = today()->setHour(10);
+        Carbon::setTestNow($now);
+        
+        $employee = $this->getNewEmployee();
+        $entry_uuid = Str::uuid();
+        $employee->getAgregate()->startWork($entry_uuid,$now->copy()->subWeek())->persist();
+        $card = $this->getNewCardFor($employee);
+        
+        $scanner = factory(HardwareScanner::class)->create();
+
+        $response = $this->post('/hw/card/'.$card->rfid_id.'/start', [], [
+            'Accept' => 'application/msgpack',
+            'Authorization' => 'Bearer '.$scanner->api_token
+        ]);
+
+        $response->assertStatus(200)
+            ->assertExactMessagePack([
+                'entry' => OpenEntry::where('uuid', '<>', $entry_uuid)->firstOrFail()->uuid,
+                'start' => $now->format('Y-m-d H:i:s'),
+            ]);
+    }
+
+
+    public function testStoppingWorktime()
+    {
+        $started = today()->setHour(10);
+        $now = today()->setHour(16);
+        Carbon::setTestNow($now);
+
+        $employee = $this->getNewEmployee();
+        $entry_uuid = Str::uuid();
+        $employee->getAgregate()->startWork($entry_uuid, $started)->persist();
+        $card = $this->getNewCardFor($employee);
+
+        $scanner = factory(HardwareScanner::class)->create();
+        
+        $response = $this->post('/hw/card/'.$card->rfid_id.'/stop/'.$entry_uuid, [], [
+            'Accept' => 'application/msgpack',
+            'Authorization' => 'Bearer '.$scanner->api_token
+        ]);
+
+        $response->assertStatus(200)
+            ->assertExactMessagePack([
+                'entry' => $entry_uuid,
+                'start' => $started->format('Y-m-d H:i:s'),
+                'end' => $now->format('Y-m-d H:i:s'),
+                'worked_minutes' => 360,
+            ]);
+        
+        $response = $this->get('/hw/card/'.$card->rfid_id, [
+            'Accept' => 'application/msgpack',
+            'Authorization' => 'Bearer '.$scanner->api_token
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertExactMessagePack([
+                'employee' => $employee->uuid,
+                'first_name' => $employee->first_name,
+                'last_name' => $employee->last_name,
+                'worked_today' => 360,
+                'open_entry' => null,
+                'has_invalid_entries' => false,
+            ]);
+    }
     
     
     
