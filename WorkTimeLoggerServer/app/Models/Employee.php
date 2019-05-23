@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Employee\EmployeeAgregate;
 use App\Models\WorkLog\DailySummary;
 use App\Models\WorkLog\Entry;
 use App\Models\WorkLog\OpenEntry;
@@ -55,5 +56,10 @@ class Employee extends Model
     public function IdCards()
     {
         return $this->hasMany(IdCard::class, 'employee_id')->latest('day');
+    }
+
+    public function getAgregate()
+    {
+        return EmployeeAgregate::retrieve($this->uuid);
     }
 }

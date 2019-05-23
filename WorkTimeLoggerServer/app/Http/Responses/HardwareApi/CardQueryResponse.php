@@ -3,6 +3,7 @@
 namespace App\Http\Responses\HardwareApi;
 
 
+use App\Domain\Employee\EmployeeAgregate;
 use App\Http\Resources\HardwareScannerResource;
 use App\Models\Employee;
 use App\Models\HardwareScanner;
@@ -27,8 +28,27 @@ class CardQueryResponse extends BaseArrayResponse
             'first_name' => $this->employee->first_name,
             'last_name' => $this->employee->last_name,
             'worked_today' => 0,
-            'open_entry' => null,
-            'has_invalid_entries' => false,
+            'open_entry' => $this->getOpenEntry(),
+            'has_invalid_entries' => $this->getHasInvalidEntries(),
         ];
+    }
+
+    /**
+     * @return null|string
+     */
+    private function getOpenEntry()
+    {
+        return optional(
+            $this->employee->OpenEntries()
+                ->where('start', '>', now()->subHours(EmployeeAgregate::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS))
+                ->first()
+        )->uuid;
+    }
+
+    private function getHasInvalidEntries()
+    {
+        return !! $this->employee->OpenEntries()
+            ->where('start', '<', now()->subHours(EmployeeAgregate::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS))
+            ->count();
     }
 }
