@@ -147,7 +147,7 @@ class EmployeeAgregateTest extends TestCase
             ->startWork($entry_uuid, $start_time);
         
         $this->expectException(CouldNotStartWorking::class);
-        $this->expectExceptionMessage("There is valie, already started entry.");
+        $this->expectExceptionMessage("There is valid, already started entry.");
         
         $agregate->startWork($second_entry_uuid, $second_start_time);
     }

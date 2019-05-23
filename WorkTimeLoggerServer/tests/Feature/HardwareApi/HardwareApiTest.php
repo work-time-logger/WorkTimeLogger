@@ -130,7 +130,7 @@ class HardwareApiTest extends TestCase
         
         $response->assertStatus(422)
             ->assertExactMessagePack([
-                'message' => 'There is valie, already started entry.'
+                'message' => 'There is valid, already started entry.'
             ]);
     }
     
