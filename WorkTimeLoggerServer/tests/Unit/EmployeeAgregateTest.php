@@ -46,7 +46,7 @@ class EmployeeAgregateTest extends TestCase
             ->startWork($entry_uuid, $start_time)
             ->persist();
         
-        $employee = Employee::uuid($employee_uuid);
+        $employee = Employee::byUuid($employee_uuid);
 
         $this->assertDatabaseHas('open_entries', [
             'employee_id' => $employee->id,
@@ -69,7 +69,7 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($entry_uuid, $end_time)
             ->persist();
         
-        $employee = Employee::uuid($employee_uuid);
+        $employee = Employee::byUuid($employee_uuid);
 
         $this->assertDatabaseHas('entries', [
             'employee_id' => $employee->id,
@@ -166,7 +166,7 @@ class EmployeeAgregateTest extends TestCase
             ->startWork($second_entry_uuid, $second_start_time)
             ->persist();
 
-        $employee = Employee::uuid($employee_uuid);
+        $employee = Employee::byUuid($employee_uuid);
 
         $this->assertDatabaseHas('open_entries', [
             'employee_id' => $employee->id,
@@ -195,7 +195,7 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($entry_uuid, $end_time)
             ->persist();
 
-        $employee = Employee::uuid($employee_uuid);
+        $employee = Employee::byUuid($employee_uuid);
 
         $this->assertDatabaseHas('daily_summaries', [
             'employee_id' => $employee->id,
@@ -225,7 +225,7 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($second_entry_uuid, $second_end_time)
             ->persist();
 
-        $employee = Employee::uuid($employee_uuid);
+        $employee = Employee::byUuid($employee_uuid);
 
         $this->assertDatabaseHas('daily_summaries', [
             'employee_id' => $employee->id,
@@ -248,7 +248,7 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($entry_uuid, $end_time)
             ->persist();
 
-        $employee = Employee::uuid($employee_uuid);
+        $employee = Employee::byUuid($employee_uuid);
 
         $this->assertDatabaseHas('daily_summaries', [
             'employee_id' => $employee->id,

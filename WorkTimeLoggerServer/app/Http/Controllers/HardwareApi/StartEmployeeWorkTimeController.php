@@ -31,7 +31,7 @@ class StartEmployeeWorkTimeController extends Controller
             ->startWork($entry_uuid, now())
             ->persist();
         
-        $entry = OpenEntry::uuid($entry_uuid);
+        $entry = OpenEntry::byUuid($entry_uuid);
         
         return new WorkStartedResponse($entry);
     }

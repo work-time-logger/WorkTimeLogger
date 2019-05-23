@@ -17,7 +17,7 @@ final class DailySummaryProjector implements Projector
 
     public function onEmployeeWorkedFor(EmployeeWorkedFor $event, string $aggregateUuid)
     {
-        $employee = Employee::uuid($aggregateUuid);
+        $employee = Employee::byUuid($aggregateUuid);
         
         $summary = $employee->DailySummaries()->firstOrNew([
             'day' => $event->day

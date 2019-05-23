@@ -245,7 +245,7 @@ class HardwareApiTest extends TestCase
             ->createEmployee($firstName, $lastName)
             ->persist();
 
-        return Employee::uuid($employee_uuid);
+        return Employee::byUuid($employee_uuid);
     }
 
     /**

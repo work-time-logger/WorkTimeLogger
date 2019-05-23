@@ -17,7 +17,7 @@ final class WorkLogProjector implements Projector
 
     public function onEmployeeStartedWorking(EmployeeStartedWorking $event, string $aggregateUuid)
     {
-        $employee = Employee::uuid($aggregateUuid);
+        $employee = Employee::byUuid($aggregateUuid);
         
         $entry = new OpenEntry;
         $entry->uuid = $event->uuid;
@@ -28,9 +28,9 @@ final class WorkLogProjector implements Projector
 
     public function onEmployeeStoppedWorking(EmployeeStoppedWorking $event, string $aggregateUuid)
     {
-        $employee = Employee::uuid($aggregateUuid);
+        $employee = Employee::byUuid($aggregateUuid);
         
-        $open = OpenEntry::uuid($event->uuid);
+        $open = OpenEntry::byUuid($event->uuid);
         
         $entry = new Entry;
         $entry->uuid = $event->uuid;
@@ -43,9 +43,9 @@ final class WorkLogProjector implements Projector
 
     public function onEmployeeWorkedFor(EmployeeWorkedFor $event, string $aggregateUuid)
     {
-        $employee = Employee::uuid($aggregateUuid);
+        $employee = Employee::byUuid($aggregateUuid);
         
-        $entry = Entry::uuid($event->entry_uuid);
+        $entry = Entry::byUuid($event->entry_uuid);
         $entry->worked_minutes += $event->minutes;
         $entry->save();
     }

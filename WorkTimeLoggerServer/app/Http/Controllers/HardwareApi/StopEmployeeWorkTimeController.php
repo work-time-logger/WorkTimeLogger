@@ -29,7 +29,7 @@ class StopEmployeeWorkTimeController extends Controller
             ->stopWork($entry_uuid, now())
             ->persist();
 
-        $entry = Entry::uuid($entry_uuid);
+        $entry = Entry::byUuid($entry_uuid);
 
         return new WorkStoppedResponse($entry);
     }
