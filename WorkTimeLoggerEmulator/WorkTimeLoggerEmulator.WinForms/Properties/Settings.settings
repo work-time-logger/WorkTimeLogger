@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WorkTimeLoggerEmulator.WinForms.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="token" Type="System.String" Scope="User">
+      <Value Profile="(Default)">VERY_SECRET_TEST_TOKEN</Value>
+    </Setting>
+    <Setting Name="endpoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://10.20.30.40/hw/</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

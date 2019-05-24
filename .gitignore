@@ -7,3 +7,11 @@ WorkTimeLoggerFirmwareForESP/cmake-build-debug/
 /WorkTimeLoggerServer/.vagrant
 /WorkTimeLoggerServer/erd_graph.svg
 /WorkTimeLoggerServer/erd_graph.png
+/WorkTimeLoggerEmulator/.vs
+/WorkTimeLoggerEmulator/WorkTimeLoggerEmulator.WinForms/bin
+/WorkTimeLoggerEmulator/WorkTimeLoggerEmulator.WinForms/obj
+/WorkTimeLoggerEmulator/packages
+/WorkTimeLoggerEmulator/Tests.ApiClient/bin
+/WorkTimeLoggerEmulator/Tests.ApiClient/obj
+/WorkTimeLoggerEmulator/WorkTimeLoggerEmulator.ApiClient/bin
+/WorkTimeLoggerEmulator/WorkTimeLoggerEmulator.ApiClient/obj
