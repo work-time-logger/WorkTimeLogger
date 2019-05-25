@@ -12,7 +12,6 @@ use KDuma\Eloquent\Uuidable;
 /**
  * App\Models\Scanner
  *
- * @property int $id
  * @property string $uuid
  * @property string|null $api_token
  * @property string $name
@@ -28,7 +27,6 @@ use KDuma\Eloquent\Uuidable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereApiToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereGuid($guid)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereUpdatedAt($value)
@@ -92,18 +90,39 @@ class Scanner extends Model
         return $this->{$this->getAuthIdentifierName()};
     }
 
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'uuid';
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'uuid';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
     public function StartedOpenEntries()
     {
-        return $this->hasMany(OpenEntry::class, 'started_by');
+        return $this->hasMany(OpenEntry::class, 'started_by', 'uuid');
     }
 
     public function StartedEntries()
     {
-        return $this->hasMany(Entry::class, 'started_by');
+        return $this->hasMany(Entry::class, 'started_by', 'uuid');
     }
 
     public function EndedEntries()
     {
-        return $this->hasMany(Entry::class, 'ended_by');
+        return $this->hasMany(Entry::class, 'ended_by', 'uuid');
     }
 }

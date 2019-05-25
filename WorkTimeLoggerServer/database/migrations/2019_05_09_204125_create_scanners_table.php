@@ -14,8 +14,7 @@ class CreateScannersTable extends Migration
     public function up()
     {
         Schema::create('scanners', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->uuid('uuid')->unique();
+            $table->uuid('uuid')->primary();
             $table->string('api_token')->unique()->nullable();
             $table->string('name');
             $table->boolean('is_active');
