@@ -45,11 +45,9 @@ class EmployeeAgregateTest extends TestCase
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time)
             ->persist();
-        
-        $employee = Employee::byUuid($employee_uuid);
 
         $this->assertDatabaseHas('open_entries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'uuid' => $entry_uuid,
             'start' => $start_time->format('Y-m-d H:i:s'),
         ]);
@@ -69,10 +67,8 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($entry_uuid, $end_time)
             ->persist();
         
-        $employee = Employee::byUuid($employee_uuid);
-
         $this->assertDatabaseHas('entries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'uuid' => $entry_uuid,
             'start' => $start_time->format('Y-m-d H:i:s'),
             'end' => $end_time->format('Y-m-d H:i:s'),
@@ -166,16 +162,14 @@ class EmployeeAgregateTest extends TestCase
             ->startWork($second_entry_uuid, $second_start_time)
             ->persist();
 
-        $employee = Employee::byUuid($employee_uuid);
-
         $this->assertDatabaseHas('open_entries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'uuid' => $entry_uuid,
             'start' => $start_time->format('Y-m-d H:i:s'),
         ]);
 
         $this->assertDatabaseHas('open_entries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'uuid' => $second_entry_uuid,
             'start' => $second_start_time->format('Y-m-d H:i:s'),
         ]);
@@ -195,10 +189,8 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($entry_uuid, $end_time)
             ->persist();
 
-        $employee = Employee::byUuid($employee_uuid);
-
         $this->assertDatabaseHas('daily_summaries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'day' => $start_time->format('Y-m-d'),
             'worked_minutes' => $worked_minutes
         ]);
@@ -225,10 +217,8 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($second_entry_uuid, $second_end_time)
             ->persist();
 
-        $employee = Employee::byUuid($employee_uuid);
-
         $this->assertDatabaseHas('daily_summaries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'day' => $start_time->format('Y-m-d'),
             'worked_minutes' => $worked_minutes + $second_worked_minutes
         ]);
@@ -248,22 +238,20 @@ class EmployeeAgregateTest extends TestCase
             ->stopWork($entry_uuid, $end_time)
             ->persist();
 
-        $employee = Employee::byUuid($employee_uuid);
-
         $this->assertDatabaseHas('daily_summaries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'day' => $start_time->format('Y-m-d'),
             'worked_minutes' => 2*60
         ]);
 
         $this->assertDatabaseHas('daily_summaries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'day' => $end_time->format('Y-m-d'),
             'worked_minutes' => 3*60
         ]);
 
         $this->assertDatabaseHas('entries', [
-            'employee_id' => $employee->id,
+            'employee_uuid' => $employee_uuid,
             'uuid' => $entry_uuid,
             'start' => $start_time->format('Y-m-d H:i:s'),
             'end' => $end_time->format('Y-m-d H:i:s'),

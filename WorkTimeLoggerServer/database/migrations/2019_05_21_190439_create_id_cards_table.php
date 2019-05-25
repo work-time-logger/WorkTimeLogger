@@ -15,8 +15,8 @@ class CreateIdCardsTable extends Migration
     {
         Schema::create('id_cards', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('employee_id');
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->uuid('employee_uuid');
+            $table->foreign('employee_uuid')->references('uuid')->on('employees');
             $table->uuid('uuid')->unique();
             
             $table->string('rfid_id')->unique();

@@ -9,9 +9,8 @@ use KDuma\Eloquent\Uuidable;
 /**
  * App\Models\WorkLog\OpenEntry
  *
- * @property int $id
- * @property int $employee_id
  * @property string $uuid
+ * @property string $employee_uuid
  * @property \Illuminate\Support\Carbon|null $start
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -20,9 +19,8 @@ use KDuma\Eloquent\Uuidable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereEmployeeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereEmployeeUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereGuid($guid)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereStart($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereUuid($value)
@@ -43,6 +41,27 @@ class OpenEntry extends Model
 
     public function Employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_uuid');
     }
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'uuid';
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'uuid';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 }

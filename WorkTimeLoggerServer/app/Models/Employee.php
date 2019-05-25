@@ -12,7 +12,6 @@ use KDuma\Eloquent\Uuidable;
 /**
  * App\Models\Employee
  *
- * @property int $id
  * @property string $uuid
  * @property string $first_name
  * @property string $last_name
@@ -28,7 +27,6 @@ use KDuma\Eloquent\Uuidable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee whereFirstName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee whereGuid($guid)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Employee whereUuid($value)
@@ -40,26 +38,47 @@ class Employee extends Model
 
     public function OpenEntries()
     {
-        return $this->hasMany(OpenEntry::class, 'employee_id')->latest('start');
+        return $this->hasMany(OpenEntry::class, 'employee_uuid')->latest('start');
     }
 
     public function Entries()
     {
-        return $this->hasMany(Entry::class, 'employee_id')->latest('start');
+        return $this->hasMany(Entry::class, 'employee_uuid')->latest('start');
     }
 
     public function DailySummaries()
     {
-        return $this->hasMany(DailySummary::class, 'employee_id')->latest('day');
+        return $this->hasMany(DailySummary::class, 'employee_uuid')->latest('day');
     }
 
     public function IdCards()
     {
-        return $this->hasMany(IdCard::class, 'employee_id')->latest('day');
+        return $this->hasMany(IdCard::class, 'employee_uuid')->latest('day');
     }
 
     public function getAgregate()
     {
         return EmployeeAgregate::retrieve($this->uuid);
     }
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'uuid';
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'uuid';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 }

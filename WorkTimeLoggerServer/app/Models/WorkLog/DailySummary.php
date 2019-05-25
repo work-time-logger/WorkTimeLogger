@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\WorkLog\DailySummary
  *
  * @property int $id
- * @property int $employee_id
+ * @property string $employee_uuid
  * @property \Illuminate\Support\Carbon $day
  * @property int $worked_minutes
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary whereDay($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary whereEmployeeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary whereEmployeeUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\DailySummary whereWorkedMinutes($value)
@@ -49,6 +49,6 @@ class DailySummary extends Model
 
     public function Employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_uuid');
     }
 }

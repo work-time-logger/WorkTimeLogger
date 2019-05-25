@@ -9,7 +9,7 @@ use KDuma\Eloquent\Uuidable;
  * App\Models\IdCard
  *
  * @property int $id
- * @property int $employee_id
+ * @property string $employee_uuid
  * @property string $uuid
  * @property string $rfid_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -19,7 +19,7 @@ use KDuma\Eloquent\Uuidable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard whereEmployeeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard whereEmployeeUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard whereGuid($guid)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\IdCard whereRfidId($value)
@@ -33,6 +33,6 @@ class IdCard extends Model
     
     public function Employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_uuid');
     }
 }

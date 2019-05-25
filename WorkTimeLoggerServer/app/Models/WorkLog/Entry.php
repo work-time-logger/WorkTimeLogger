@@ -9,9 +9,8 @@ use KDuma\Eloquent\Uuidable;
 /**
  * App\Models\WorkLog\Entry
  *
- * @property int $id
- * @property int $employee_id
  * @property string $uuid
+ * @property string $employee_uuid
  * @property \Illuminate\Support\Carbon|null $start
  * @property \Illuminate\Support\Carbon|null $end
  * @property int $worked_minutes
@@ -22,10 +21,9 @@ use KDuma\Eloquent\Uuidable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereEmployeeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereEmployeeUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereEnd($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereGuid($guid)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereStart($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\Entry whereUuid($value)
@@ -49,6 +47,27 @@ class Entry extends Model
 
     public function Employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_uuid');
     }
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'uuid';
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'uuid';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 }

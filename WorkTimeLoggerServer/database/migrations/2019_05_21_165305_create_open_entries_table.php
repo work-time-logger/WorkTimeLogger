@@ -14,10 +14,9 @@ class CreateOpenEntriesTable extends Migration
     public function up()
     {
         Schema::create('open_entries', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('employee_id');
-            $table->foreign('employee_id')->references('id')->on('employees');
-            $table->uuid('uuid')->unique();
+            $table->uuid('uuid')->primary();
+            $table->uuid('employee_uuid');
+            $table->foreign('employee_uuid')->references('uuid')->on('employees');
             $table->timestamp('start')->nullable();
             $table->timestamps();
         });

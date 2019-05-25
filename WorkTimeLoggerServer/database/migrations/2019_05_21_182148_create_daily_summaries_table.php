@@ -15,13 +15,13 @@ class CreateDailySummariesTable extends Migration
     {
         Schema::create('daily_summaries', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('employee_id');
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->uuid('employee_uuid');
+            $table->foreign('employee_uuid')->references('uuid')->on('employees');
             $table->date('day');
             $table->integer('worked_minutes');
             $table->timestamps();
             
-            $table->unique(['employee_id', 'day']);
+            $table->unique(['employee_uuid', 'day']);
         });
     }
 
