@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateIdCardsTable extends Migration
+class CreateCardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateIdCardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('id_cards', function (Blueprint $table) {
+        Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('id');
+            
             $table->uuid('employee_uuid');
 //            $table->foreign('employee_uuid')->references('uuid')->on('employees');
-            $table->uuid('uuid')->unique();
             
-            $table->string('rfid_id')->unique();
+            $table->string('identifier')->unique();
             
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ class CreateIdCardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('id_cards');
+        Schema::dropIfExists('cards');
     }
 }

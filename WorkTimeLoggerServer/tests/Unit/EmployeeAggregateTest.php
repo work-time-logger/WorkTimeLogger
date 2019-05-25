@@ -290,4 +290,42 @@ class EmployeeAggregateTest extends TestCase
             'worked_minutes' => $worked_minutes
         ]);
     }
+
+    public function testCardRegistration()
+    {
+        $employee_uuid = Str::uuid();
+        $card_identifier = Str::random();
+
+        $firstName = $this->faker->firstName;
+        $lastName = $this->faker->lastName;
+
+        EmployeeAggregate::retrieve($employee_uuid)
+            ->createEmployee($firstName, $lastName)
+            ->registerCard($card_identifier)
+            ->persist();
+
+        $this->assertDatabaseHas('cards', [
+            'employee_uuid' => $employee_uuid,
+            'identifier' => $card_identifier,
+        ]);
+    }
+
+    public function testCardUnregistration()
+    {
+        $employee_uuid = Str::uuid();
+        $card_identifier = Str::random();
+
+        $firstName = $this->faker->firstName;
+        $lastName = $this->faker->lastName;
+
+        EmployeeAggregate::retrieve($employee_uuid)
+            ->createEmployee($firstName, $lastName)
+            ->registerCard($card_identifier)
+            ->unregisterCard($card_identifier)
+            ->persist();
+
+        $this->assertDatabaseMissing('cards', [
+            'identifier' => $card_identifier,
+        ]);
+    }
 }

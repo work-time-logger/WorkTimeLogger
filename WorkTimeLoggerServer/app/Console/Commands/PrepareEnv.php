@@ -7,7 +7,7 @@ use App\Domain\Employee\Exceptions\CouldNotStopWorking;
 use App\Domain\Scanner\ScannerAggregate;
 use App\Models\Employee;
 use App\Models\Scanner;
-use App\Models\IdCard;
+use App\Models\Card;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
@@ -65,33 +65,21 @@ class PrepareEnv extends Command
             ->stopWork($entry_uuid, today()->subDay()->setHour(18))
             ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(21))
             ->stopWork($entry_uuid, today()->setHour(8))
+            ->registerCard(self::FIRST_CARD_ID)
             ->persist();
-
-        $card = new IdCard();
-        $card->uuid = Str::uuid();
-        $card->rfid_id = self::FIRST_CARD_ID;
-        Employee::byUuid(self::FIRST_EMPLOYEE_UUID)->IdCards()->save($card);
         
         EmployeeAggregate::retrieve(self::SECOND_EMPLOYEE_UUID)
             ->createEmployee('Ignacy', 'Macierewicz')
             ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(10))
             ->stopWork($entry_uuid, today()->subDay()->setHour(14))
+            ->registerCard(self::SECOND_CARD_ID)
             ->persist();
-
-        $card = new IdCard();
-        $card->uuid = Str::uuid();
-        $card->rfid_id = self::SECOND_CARD_ID;
-        Employee::byUuid(self::SECOND_EMPLOYEE_UUID)->IdCards()->save($card);
         
         EmployeeAggregate::retrieve(self::THIRD_EMPLOYEE_UUID)
             ->createEmployee('Ewa', 'Marcinkiewicz')
             ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(15))
             ->stopWork($entry_uuid, today()->subDay()->setHour(18))
+            ->registerCard(self::THIRD_CARD_ID)
             ->persist();
-
-        $card = new IdCard();
-        $card->uuid = Str::uuid();
-        $card->rfid_id = self::THIRD_CARD_ID;
-        Employee::byUuid(self::THIRD_EMPLOYEE_UUID)->IdCards()->save($card);
     }
 }

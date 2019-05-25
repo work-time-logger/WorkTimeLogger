@@ -5,7 +5,7 @@ namespace App\Http\Controllers\HardwareApi;
 use App\Domain\Employee\EmployeeAggregate;
 use App\Http\Responses\HardwareApi\WorkStartedResponse;
 use App\Http\Responses\HardwareApi\WorkStoppedResponse;
-use App\Models\IdCard;
+use App\Models\Card;
 use App\Models\WorkLog\Entry;
 use App\Models\WorkLog\OpenEntry;
 use Illuminate\Http\Request;
@@ -21,9 +21,9 @@ class StopEmployeeWorkTimeController extends Controller
      *
      * @return WorkStoppedResponse
      */
-    public function __invoke(Request $request, $rfid_id, $entry_uuid)
+    public function __invoke(Request $request, $card_identifier, $entry_uuid)
     {
-        $card = IdCard::where('rfid_id', $rfid_id)->firstOrFail();
+        $card = Card::where('identifier', $card_identifier)->firstOrFail();
 
         $card->Employee->getAggregate()
             ->stopWork($entry_uuid, now())

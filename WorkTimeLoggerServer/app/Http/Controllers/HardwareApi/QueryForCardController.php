@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\HardwareApi;
 
 use App\Http\Responses\HardwareApi\CardQueryResponse;
-use App\Models\IdCard;
+use App\Models\Card;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -13,13 +13,13 @@ class QueryForCardController extends Controller
      * Handle the incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param                          $rfid_id
+     * @param                          $card_identifier
      *
      * @return CardQueryResponse
      */
-    public function __invoke(Request $request, $rfid_id)
+    public function __invoke(Request $request, $card_identifier)
     {
-        $card = IdCard::where('rfid_id', $rfid_id)->firstOrFail();
+        $card = Card::where('identifier', $card_identifier)->firstOrFail();
         
         return new CardQueryResponse($card->Employee);
     }

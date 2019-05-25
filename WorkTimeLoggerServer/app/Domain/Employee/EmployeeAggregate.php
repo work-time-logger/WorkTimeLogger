@@ -2,6 +2,8 @@
 
 namespace App\Domain\Employee;
 
+use App\Domain\Employee\Events\CardWasRegistered;
+use App\Domain\Employee\Events\CardWasUnregistered;
 use App\Domain\Employee\Events\EmployeeCreated;
 use App\Domain\Employee\Events\EmployeeStartedWorking;
 use App\Domain\Employee\Events\EmployeeStoppedWorking;
@@ -92,6 +94,16 @@ final class EmployeeAggregate extends AggregateRoot
         }
         
         return $this;
+    }
+    
+    public function registerCard(string $identifier) 
+    {
+        return $this->recordThat(new CardWasRegistered($identifier));
+    }
+    
+    public function unregisterCard(string $identifier) 
+    {
+        return $this->recordThat(new CardWasUnregistered($identifier));
     }
 
     protected function applyEmployeeCreated(EmployeeCreated $event)

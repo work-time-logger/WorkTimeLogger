@@ -5,7 +5,7 @@ namespace Tests\Feature\HardwareApi;
 use App\Domain\Employee\EmployeeAggregate;
 use App\Domain\Scanner\ScannerAggregate;
 use App\Models\Employee;
-use App\Models\IdCard;
+use App\Models\Card;
 use App\Models\WorkLog\OpenEntry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -40,7 +40,7 @@ class HardwareApiTest extends TestCase
         
         $scanner = $this->getNewScanner();
         
-        $response = $this->get('/hw/card/'.$card->rfid_id, [
+        $response = $this->get('/hw/card/'.$card->identifier, [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -67,7 +67,7 @@ class HardwareApiTest extends TestCase
         $now = today()->setHour(10);
         Carbon::setTestNow($now);
         
-        $response = $this->get('/hw/card/'.$card->rfid_id, [
+        $response = $this->get('/hw/card/'.$card->identifier, [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -83,7 +83,7 @@ class HardwareApiTest extends TestCase
                 'has_invalid_entries' => false,
             ]);
         
-        $response = $this->post('/hw/card/'.$card->rfid_id.'/start', [], [
+        $response = $this->post('/hw/card/'.$card->identifier.'/start', [], [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -95,7 +95,7 @@ class HardwareApiTest extends TestCase
                 'start' => $now->format('Y-m-d H:i:s'),
             ]);
         
-        $response = $this->get('/hw/card/'.$card->rfid_id, [
+        $response = $this->get('/hw/card/'.$card->identifier, [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -124,7 +124,7 @@ class HardwareApiTest extends TestCase
         
         $scanner = $this->getNewScanner();
 
-        $response = $this->post('/hw/card/'.$card->rfid_id.'/start', [], [
+        $response = $this->post('/hw/card/'.$card->identifier.'/start', [], [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -146,7 +146,7 @@ class HardwareApiTest extends TestCase
         
         $scanner = $this->getNewScanner();
 
-        $response = $this->get('/hw/card/'.$card->rfid_id, [
+        $response = $this->get('/hw/card/'.$card->identifier, [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -175,7 +175,7 @@ class HardwareApiTest extends TestCase
         
         $scanner = $this->getNewScanner();
 
-        $response = $this->post('/hw/card/'.$card->rfid_id.'/start', [], [
+        $response = $this->post('/hw/card/'.$card->identifier.'/start', [], [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -201,7 +201,7 @@ class HardwareApiTest extends TestCase
 
         $scanner = $this->getNewScanner();
         
-        $response = $this->post('/hw/card/'.$card->rfid_id.'/stop/'.$entry_uuid, [], [
+        $response = $this->post('/hw/card/'.$card->identifier.'/stop/'.$entry_uuid, [], [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -214,7 +214,7 @@ class HardwareApiTest extends TestCase
                 'worked_minutes' => 360,
             ]);
         
-        $response = $this->get('/hw/card/'.$card->rfid_id, [
+        $response = $this->get('/hw/card/'.$card->identifier, [
             'Accept' => 'application/msgpack',
             'Authorization' => 'Bearer '.$scanner->api_token
         ]);
@@ -252,15 +252,15 @@ class HardwareApiTest extends TestCase
     /**
      * @param Employee $employee
      *
-     * @return IdCard
+     * @return Card
      */
-    protected function getNewCardFor(Employee $employee): IdCard
+    protected function getNewCardFor(Employee $employee): Card
     {
-        $card = new IdCard();
-        $card->uuid = Str::uuid();
-        $card->rfid_id = Str::random(16);
-        $employee->IdCards()->save($card);
-        return $card;
+        $identifier = Str::random(16);
+
+        $employee->getAggregate()->registerCard($identifier)->persist();
+        
+        return Card::where('identifier', $identifier)->firstOrFail();
     }
 
     /**
