@@ -56,7 +56,7 @@ class Employee extends Model
         return $this->hasMany(IdCard::class, 'employee_uuid')->latest('day');
     }
 
-    public function getAgregate()
+    public function getAggregate()
     {
         return EmployeeAggregate::retrieve($this->uuid);
     }

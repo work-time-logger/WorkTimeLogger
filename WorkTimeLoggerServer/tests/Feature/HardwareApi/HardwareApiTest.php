@@ -169,7 +169,7 @@ class HardwareApiTest extends TestCase
         
         $employee = $this->getNewEmployee();
         $entry_uuid = Str::uuid();
-        $employee->getAgregate()->startWork($entry_uuid,$now->copy()->subWeek())->persist();
+        $employee->getAggregate()->startWork($entry_uuid,$now->copy()->subWeek())->persist();
         $card = $this->getNewCardFor($employee);
         
         $scanner = factory(HardwareScanner::class)->create();
@@ -195,7 +195,7 @@ class HardwareApiTest extends TestCase
 
         $employee = $this->getNewEmployee();
         $entry_uuid = Str::uuid();
-        $employee->getAgregate()->startWork($entry_uuid, $started)->persist();
+        $employee->getAggregate()->startWork($entry_uuid, $started)->persist();
         $card = $this->getNewCardFor($employee);
 
         $scanner = factory(HardwareScanner::class)->create();
