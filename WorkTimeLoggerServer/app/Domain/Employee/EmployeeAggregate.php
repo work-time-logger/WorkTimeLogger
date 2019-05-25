@@ -11,6 +11,7 @@ use App\Domain\Employee\Events\EmployeeWorkedFor;
 use App\Domain\Employee\Exceptions\CouldNotCreateEmployee;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
 use App\Domain\Employee\Exceptions\CouldNotStartWorking;
+use App\Models\Scanner;
 use Spatie\EventProjector\AggregateRoot;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -53,7 +54,7 @@ final class EmployeeAggregate extends AggregateRoot
         return $this->recordThat(new EmployeeCreated($first_name, $last_name));
     }
 
-    public function startWork(string $uuid = null, Carbon $time = null)
+    public function startWork(string $uuid = null, Carbon $time = null, Scanner $scanner = null)
     {
         if(!$this->created)
             throw CouldNotStartWorking::employeeDoesntExists();
@@ -65,10 +66,10 @@ final class EmployeeAggregate extends AggregateRoot
         if($valid_entries->count())
             throw CouldNotStartWorking::validEntryAlreadyExist();
         
-        return $this->recordThat(new EmployeeStartedWorking($uuid ?? Str::uuid(), $time ?? now()));
+        return $this->recordThat(new EmployeeStartedWorking($uuid ?? Str::uuid(), $time ?? now(), optional($scanner)->uuid));
     }
 
-    public function stopWork(string $uuid, Carbon $end_time = null)
+    public function stopWork(string $uuid, Carbon $end_time = null, Scanner $scanner = null)
     {            
         $end_time = $end_time ?? now();
 
@@ -83,7 +84,7 @@ final class EmployeeAggregate extends AggregateRoot
 
         $start_time = $this->workLog[$uuid];
 
-        $this->recordThat(new EmployeeStoppedWorking($uuid, $end_time));
+        $this->recordThat(new EmployeeStoppedWorking($uuid, $end_time, optional($scanner)->uuid));
         
         if($end_time > $start_time->copy()->endOfDay()){
             $this->recordThat(new EmployeeWorkedFor($uuid, $start_time->format('Y-m-d'), $start_time->diffInMinutes($end_time->copy()->startOfDay())));

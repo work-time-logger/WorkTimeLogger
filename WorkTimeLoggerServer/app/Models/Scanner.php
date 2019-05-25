@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Domain\Employee\EmployeeAggregate;
 use App\Domain\Scanner\ScannerAggregate;
+use App\Models\WorkLog\Entry;
+use App\Models\WorkLog\OpenEntry;
 use Illuminate\Database\Eloquent\Model;
 use KDuma\Eloquent\Uuidable;
 
@@ -17,6 +19,9 @@ use KDuma\Eloquent\Uuidable;
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\Entry[] $EndedEntries
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\Entry[] $StartedEntries
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WorkLog\OpenEntry[] $StartedOpenEntries
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner query()
@@ -85,5 +90,20 @@ class Scanner extends Model
     public function getAuthIdentifier()
     {
         return $this->{$this->getAuthIdentifierName()};
+    }
+
+    public function StartedOpenEntries()
+    {
+        return $this->hasMany(OpenEntry::class, 'started_by');
+    }
+
+    public function StartedEntries()
+    {
+        return $this->hasMany(Entry::class, 'started_by');
+    }
+
+    public function EndedEntries()
+    {
+        return $this->hasMany(Entry::class, 'ended_by');
     }
 }

@@ -18,6 +18,7 @@ class CreateOpenEntriesTable extends Migration
             $table->uuid('employee_uuid');
 //            $table->foreign('employee_uuid')->references('uuid')->on('employees');
             $table->timestamp('start')->nullable();
+            $table->string('started_by')->nullable();
             $table->timestamps();
         });
     }

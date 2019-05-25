@@ -22,6 +22,7 @@ final class WorkLogProjector implements Projector
         $entry = new OpenEntry;
         $entry->uuid = $event->uuid;
         $entry->start = $event->carbon();
+        $entry->started_by = $event->scanner_uuid;
         
         $employee->OpenEntries()->save($entry);
     }
@@ -36,6 +37,8 @@ final class WorkLogProjector implements Projector
         $entry->uuid = $event->uuid;
         $entry->start = $open->start;
         $entry->end = $event->carbon();
+        $entry->started_by = $open->started_by;
+        $entry->ended_by = $event->scanner_uuid;
         
         $employee->Entries()->save($entry);
         $open->delete();

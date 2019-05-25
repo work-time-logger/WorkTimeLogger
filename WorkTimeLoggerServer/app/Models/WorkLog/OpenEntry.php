@@ -3,6 +3,7 @@
 namespace App\Models\WorkLog;
 
 use App\Models\Employee;
+use App\Models\Scanner;
 use Illuminate\Database\Eloquent\Model;
 use KDuma\Eloquent\Uuidable;
 
@@ -12,9 +13,11 @@ use KDuma\Eloquent\Uuidable;
  * @property string $uuid
  * @property string $employee_uuid
  * @property \Illuminate\Support\Carbon|null $start
+ * @property string|null $started_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Employee $Employee
+ * @property-read \App\Models\Scanner|null $StartedBy
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry query()
@@ -22,6 +25,7 @@ use KDuma\Eloquent\Uuidable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereEmployeeUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereGuid($guid)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereStartedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\WorkLog\OpenEntry whereUuid($value)
  * @mixin \Eloquent
@@ -42,6 +46,11 @@ class OpenEntry extends Model
     public function Employee()
     {
         return $this->belongsTo(Employee::class, 'employee_uuid');
+    }
+
+    public function StartedBy()
+    {
+        return $this->belongsTo(Scanner::class, 'started_by');
     }
 
     /**

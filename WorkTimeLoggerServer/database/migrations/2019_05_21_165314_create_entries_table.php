@@ -20,6 +20,8 @@ class CreateEntriesTable extends Migration
             $table->timestamp('start')->nullable();
             $table->timestamp('end')->nullable();
             $table->integer('worked_minutes')->default(0);
+            $table->string('started_by')->nullable();
+            $table->string('ended_by')->nullable();
             $table->timestamps();
         });
     }

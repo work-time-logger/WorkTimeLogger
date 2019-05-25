@@ -6,7 +6,9 @@ use App\Domain\Employee\EmployeeAggregate;
 use App\Domain\Employee\Exceptions\CouldNotCreateEmployee;
 use App\Domain\Employee\Exceptions\CouldNotStartWorking;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
+use App\Domain\Scanner\ScannerAggregate;
 use App\Models\Employee;
+use App\Models\Scanner;
 use DateTime;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -68,6 +70,31 @@ class EmployeeAggregateTest extends TestCase
             'employee_uuid' => $employee_uuid,
             'uuid' => $entry_uuid,
             'start' => $start_time->format('Y-m-d H:i:s'),
+            'started_by' => null,
+        ]);
+    }
+    
+    public function testEmployeeOpeningWorkLogWithSpecifiedScanner()
+    {
+        $scanner_uuid = Str::uuid();
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
+        
+        ScannerAggregate::retrieve($scanner_uuid)
+            ->createScanner($this->faker->name)
+            ->persist();
+
+        EmployeeAggregate::retrieve($employee_uuid)
+            ->createEmployee($this->faker->firstName, $this->faker->lastName)
+            ->startWork($entry_uuid, $start_time, Scanner::byUuid($scanner_uuid))
+            ->persist();
+
+        $this->assertDatabaseHas('open_entries', [
+            'employee_uuid' => $employee_uuid,
+            'uuid' => $entry_uuid,
+            'start' => $start_time->format('Y-m-d H:i:s'),
+            'started_by' => $scanner_uuid,
         ]);
     }
     
@@ -104,7 +131,43 @@ class EmployeeAggregateTest extends TestCase
             'uuid' => $entry_uuid,
             'start' => $start_time->format('Y-m-d H:i:s'),
             'end' => $end_time->format('Y-m-d H:i:s'),
-            'worked_minutes' => $worked_minutes
+            'worked_minutes' => $worked_minutes,
+            'started_by' => null,
+            'ended_by' => null,
+        ]);
+
+        $this->assertDatabaseMissing('open_entries', [
+            'uuid' => $entry_uuid
+        ]);
+    }
+    
+    public function testEmployeeClosingWorkLogWithSpecifiedScanner()
+    {
+        $scanner_uuid = Str::uuid();
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp())->startOfMinute();
+        $worked_minutes = 60 * 8;
+        $end_time = $start_time->copy()->addMinutes($worked_minutes);
+        
+        ScannerAggregate::retrieve($scanner_uuid)
+            ->createScanner($this->faker->name)
+            ->persist();
+
+        EmployeeAggregate::retrieve($employee_uuid)
+            ->createEmployee($this->faker->firstName, $this->faker->lastName)
+            ->startWork($entry_uuid, $start_time)
+            ->stopWork($entry_uuid, $end_time, Scanner::byUuid($scanner_uuid))
+            ->persist();
+        
+        $this->assertDatabaseHas('entries', [
+            'employee_uuid' => $employee_uuid,
+            'uuid' => $entry_uuid,
+            'start' => $start_time->format('Y-m-d H:i:s'),
+            'end' => $end_time->format('Y-m-d H:i:s'),
+            'worked_minutes' => $worked_minutes,
+            'started_by' => null,
+            'ended_by' => $scanner_uuid,
         ]);
 
         $this->assertDatabaseMissing('open_entries', [
