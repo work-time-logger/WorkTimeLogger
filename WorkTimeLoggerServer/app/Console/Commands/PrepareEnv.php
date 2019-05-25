@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Employee\EmployeeAgregate;
+use App\Domain\Employee\EmployeeAggregate;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
 use App\Models\Employee;
 use App\Models\HardwareScanner;
@@ -57,7 +57,7 @@ class PrepareEnv extends Command
         $scanner->is_active = true;
         $scanner->save();
         
-        EmployeeAgregate::retrieve(self::FIRST_EMPLOYEE_UUID)
+        EmployeeAggregate::retrieve(self::FIRST_EMPLOYEE_UUID)
             ->createEmployee('Janusz', 'Kowalski')
             ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(10))
             ->stopWork($entry_uuid, today()->subDay()->setHour(18))
@@ -70,7 +70,7 @@ class PrepareEnv extends Command
         $card->rfid_id = self::FIRST_CARD_ID;
         Employee::byUuid(self::FIRST_EMPLOYEE_UUID)->IdCards()->save($card);
         
-        EmployeeAgregate::retrieve(self::SECOND_EMPLOYEE_UUID)
+        EmployeeAggregate::retrieve(self::SECOND_EMPLOYEE_UUID)
             ->createEmployee('Ignacy', 'Macierewicz')
             ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(10))
             ->stopWork($entry_uuid, today()->subDay()->setHour(14))
@@ -81,7 +81,7 @@ class PrepareEnv extends Command
         $card->rfid_id = self::SECOND_CARD_ID;
         Employee::byUuid(self::SECOND_EMPLOYEE_UUID)->IdCards()->save($card);
         
-        EmployeeAgregate::retrieve(self::THIRD_EMPLOYEE_UUID)
+        EmployeeAggregate::retrieve(self::THIRD_EMPLOYEE_UUID)
             ->createEmployee('Ewa', 'Marcinkiewicz')
             ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(15))
             ->stopWork($entry_uuid, today()->subDay()->setHour(18))

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Domain\Employee\EmployeeAgregate;
+use App\Domain\Employee\EmployeeAggregate;
 use App\Models\WorkLog\DailySummary;
 use App\Models\WorkLog\Entry;
 use App\Models\WorkLog\OpenEntry;
@@ -58,7 +58,7 @@ class Employee extends Model
 
     public function getAgregate()
     {
-        return EmployeeAgregate::retrieve($this->uuid);
+        return EmployeeAggregate::retrieve($this->uuid);
     }
 
     /**

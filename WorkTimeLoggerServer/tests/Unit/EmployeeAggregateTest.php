@@ -2,7 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Domain\Employee\EmployeeAgregate;
+use App\Domain\Employee\EmployeeAggregate;
+use App\Domain\Employee\Exceptions\CouldNotCreateEmployee;
 use App\Domain\Employee\Exceptions\CouldNotStartWorking;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
 use App\Models\Employee;
@@ -13,7 +14,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class EmployeeAgregateTest extends TestCase
+class EmployeeAggregateTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
     
@@ -24,7 +25,7 @@ class EmployeeAgregateTest extends TestCase
         $firstName = $this->faker->firstName;
         $lastName = $this->faker->lastName;
         
-        EmployeeAgregate::retrieve($employee_uuid)
+        EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($firstName, $lastName)
             ->persist();
 
@@ -35,13 +36,30 @@ class EmployeeAgregateTest extends TestCase
         ]);
     }
     
+    public function testEmployeeCreationOfAlreadyCreatedUser()
+    {
+        $employee_uuid = Str::uuid();
+
+        $firstName = $this->faker->firstName;
+        $lastName = $this->faker->lastName;
+        
+        $aggreggate = EmployeeAggregate::retrieve($employee_uuid)
+            ->createEmployee($firstName, $lastName)
+            ->persist();
+        
+        $this->expectException(CouldNotCreateEmployee::class);
+        $this->expectExceptionMessage("Employee with provided ID already exists.");
+
+        $aggreggate->createEmployee($firstName, $lastName);
+    }
+    
     public function testEmployeeOpeningWorkLog()
     {
         $employee_uuid = Str::uuid();
         $entry_uuid = Str::uuid();
         $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
 
-        EmployeeAgregate::retrieve($employee_uuid)
+        EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time)
             ->persist();
@@ -53,6 +71,20 @@ class EmployeeAgregateTest extends TestCase
         ]);
     }
     
+    public function testNonExistingEmployeeOpeningWorkLog()
+    {
+        $employee_uuid = Str::uuid();
+        $entry_uuid = Str::uuid();
+        $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
+
+        $aggregate = EmployeeAggregate::retrieve($employee_uuid);
+        
+        $this->expectException(CouldNotStartWorking::class);
+        $this->expectExceptionMessage("Employee doesn't exist.");
+        
+        $aggregate->startWork($entry_uuid, $start_time);
+    }
+    
     public function testEmployeeClosingWorkLog()
     {
         $employee_uuid = Str::uuid();
@@ -61,7 +93,7 @@ class EmployeeAgregateTest extends TestCase
         $worked_minutes = 60 * 8;
         $end_time = $start_time->copy()->addMinutes($worked_minutes);
 
-        EmployeeAgregate::retrieve($employee_uuid)
+        EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time)
             ->stopWork($entry_uuid, $end_time)
@@ -87,7 +119,7 @@ class EmployeeAgregateTest extends TestCase
         $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
         $end_time = $start_time->copy()->addHour();
 
-        $agregate = EmployeeAgregate::retrieve($employee_uuid)
+        $agregate = EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName);
 
         $this->expectException(CouldNotStopWorking::class);
@@ -103,7 +135,7 @@ class EmployeeAgregateTest extends TestCase
         $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
         $end_time = $start_time->copy()->addWeek();
 
-        $agregate = EmployeeAgregate::retrieve($employee_uuid)
+        $agregate = EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time);
 
@@ -120,7 +152,7 @@ class EmployeeAgregateTest extends TestCase
         $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
         $end_time = $start_time->copy()->subHour();
 
-        $agregate = EmployeeAgregate::retrieve($employee_uuid)
+        $agregate = EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time);
 
@@ -138,7 +170,7 @@ class EmployeeAgregateTest extends TestCase
         $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
         $second_start_time = $start_time->copy()->addHour();
 
-        $agregate = EmployeeAgregate::retrieve($employee_uuid)
+        $agregate = EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time);
         
@@ -156,7 +188,7 @@ class EmployeeAgregateTest extends TestCase
         $start_time = Carbon::createFromTimestamp($this->faker->dateTimeBetween('-1 month')->getTimestamp());
         $second_start_time = $start_time->copy()->addDay();
 
-        $agregate = EmployeeAgregate::retrieve($employee_uuid)
+        $agregate = EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time)
             ->startWork($second_entry_uuid, $second_start_time)
@@ -183,7 +215,7 @@ class EmployeeAgregateTest extends TestCase
         $worked_minutes = 60 * 3;
         $end_time = $start_time->copy()->addMinutes($worked_minutes);
 
-        EmployeeAgregate::retrieve($employee_uuid)
+        EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time)
             ->stopWork($entry_uuid, $end_time)
@@ -209,7 +241,7 @@ class EmployeeAgregateTest extends TestCase
         $second_worked_minutes = 60 * 5;
         $second_end_time = $second_start_time->copy()->addMinutes($second_worked_minutes);
 
-        EmployeeAgregate::retrieve($employee_uuid)
+        EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time)
             ->stopWork($entry_uuid, $end_time)
@@ -232,7 +264,7 @@ class EmployeeAgregateTest extends TestCase
         $worked_minutes = 60 * 5;
         $end_time = $start_time->copy()->addMinutes($worked_minutes);
 
-        EmployeeAgregate::retrieve($employee_uuid)
+        EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($this->faker->firstName, $this->faker->lastName)
             ->startWork($entry_uuid, $start_time)
             ->stopWork($entry_uuid, $end_time)

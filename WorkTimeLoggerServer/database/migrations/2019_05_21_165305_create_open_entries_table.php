@@ -16,7 +16,7 @@ class CreateOpenEntriesTable extends Migration
         Schema::create('open_entries', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
             $table->uuid('employee_uuid');
-            $table->foreign('employee_uuid')->references('uuid')->on('employees');
+//            $table->foreign('employee_uuid')->references('uuid')->on('employees');
             $table->timestamp('start')->nullable();
             $table->timestamps();
         });

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\HardwareApi;
 
-use App\Domain\Employee\EmployeeAgregate;
+use App\Domain\Employee\EmployeeAggregate;
 use App\Models\Employee;
 use App\Models\IdCard;
 use App\Models\WorkLog\OpenEntry;
@@ -241,7 +241,7 @@ class HardwareApiTest extends TestCase
         $firstName = $this->faker->firstName;
         $lastName = $this->faker->lastName;
 
-        EmployeeAgregate::retrieve($employee_uuid)
+        EmployeeAggregate::retrieve($employee_uuid)
             ->createEmployee($firstName, $lastName)
             ->persist();
 

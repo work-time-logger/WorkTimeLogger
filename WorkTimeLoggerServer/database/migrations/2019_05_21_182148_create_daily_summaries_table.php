@@ -16,7 +16,7 @@ class CreateDailySummariesTable extends Migration
         Schema::create('daily_summaries', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('employee_uuid');
-            $table->foreign('employee_uuid')->references('uuid')->on('employees');
+//            $table->foreign('employee_uuid')->references('uuid')->on('employees');
             $table->date('day');
             $table->integer('worked_minutes');
             $table->timestamps();

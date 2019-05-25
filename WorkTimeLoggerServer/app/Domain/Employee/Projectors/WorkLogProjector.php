@@ -49,4 +49,10 @@ final class WorkLogProjector implements Projector
         $entry->worked_minutes += $event->minutes;
         $entry->save();
     }
+
+    public function onStartingEventReplay()
+    {
+        OpenEntry::truncate();
+        Entry::truncate();
+    }
 }

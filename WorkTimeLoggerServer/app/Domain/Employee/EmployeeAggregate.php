@@ -6,30 +6,56 @@ use App\Domain\Employee\Events\EmployeeCreated;
 use App\Domain\Employee\Events\EmployeeStartedWorking;
 use App\Domain\Employee\Events\EmployeeStoppedWorking;
 use App\Domain\Employee\Events\EmployeeWorkedFor;
+use App\Domain\Employee\Exceptions\CouldNotCreateEmployee;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
 use App\Domain\Employee\Exceptions\CouldNotStartWorking;
 use Spatie\EventProjector\AggregateRoot;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Spatie\EventProjector\ShouldBeStored;
 
-final class EmployeeAgregate extends AggregateRoot
+/**
+ * @method static EmployeeAggregate retrieve(string $uuid) 
+ * @method EmployeeAggregate recordThat(ShouldBeStored $domainEvent) 
+ * @method EmployeeAggregate persist() 
+ */
+final class EmployeeAggregate extends AggregateRoot
 {
     const OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS = 12;
+    
+    /**
+     * @var bool
+     */
+    private $created = false;
     
     /**
      * @var array|Carbon[]
      */
     private $workLog = [];
+    
+    /**
+     * @var string
+     */
+    private $first_name;
+    
+    /**
+     * @var string
+     */
+    private $last_name;
 
     public function createEmployee(string $first_name, string $last_name)
     {
-        $this->recordThat(new EmployeeCreated($first_name, $last_name));
-
-        return $this;
+        if($this->created)
+            throw CouldNotCreateEmployee::employeeAlreadyExist();
+        
+        return $this->recordThat(new EmployeeCreated($first_name, $last_name));
     }
 
     public function startWork(string $uuid = null, Carbon $time = null)
     {
+        if(!$this->created)
+            throw CouldNotStartWorking::employeeDoesntExists();
+            
         $valid_entries = collect($this->workLog)->filter(function (Carbon $entry_time) use ($time) {
             return $entry_time->diffInHours($time, true) < self::OPEN_WORK_LOG_ENTRY_EXPIRATION_IN_HOURS;
         });
@@ -37,18 +63,11 @@ final class EmployeeAgregate extends AggregateRoot
         if($valid_entries->count())
             throw CouldNotStartWorking::validEntryAlreadyExist();
         
-        $this->recordThat(new EmployeeStartedWorking($uuid ?? Str::uuid(), $time ?? now()));
-
-        return $this;
-    }
-
-    public function applyEmployeeStartedWorking(EmployeeStartedWorking $event)
-    {
-        $this->workLog[$event->uuid] = $event->carbon();
+        return $this->recordThat(new EmployeeStartedWorking($uuid ?? Str::uuid(), $time ?? now()));
     }
 
     public function stopWork(string $uuid, Carbon $end_time = null)
-    {
+    {            
         $end_time = $end_time ?? now();
 
         if(!isset($this->workLog[$uuid]))
@@ -75,7 +94,19 @@ final class EmployeeAgregate extends AggregateRoot
         return $this;
     }
 
-    public function applyEmployeeStoppedWorking(EmployeeStoppedWorking $event)
+    protected function applyEmployeeCreated(EmployeeCreated $event)
+    {
+        $this->created = true;
+        $this->first_name = $event->first_name;
+        $this->last_name = $event->last_name;
+    }
+
+    protected function applyEmployeeStartedWorking(EmployeeStartedWorking $event)
+    {
+        $this->workLog[$event->uuid] = $event->carbon();
+    }
+
+    protected function applyEmployeeStoppedWorking(EmployeeStoppedWorking $event)
     {
         unset($this->workLog[$event->uuid]);
     }

@@ -19,4 +19,9 @@ final class EmployeesProjector implements Projector
         $employee->last_name = $event->last_name;
         $employee->save();
     }
+
+    public function onStartingEventReplay()
+    {
+        Employee::truncate();
+    }
 }

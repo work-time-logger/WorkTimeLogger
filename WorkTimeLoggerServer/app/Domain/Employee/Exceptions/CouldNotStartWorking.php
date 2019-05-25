@@ -11,4 +11,9 @@ class CouldNotStartWorking extends DomainException
     {
         return new static("There is valid, already started entry.");
     }
+
+    public static function employeeDoesntExists()
+    {
+        return new static("Employee doesn't exist.");
+    }
 }

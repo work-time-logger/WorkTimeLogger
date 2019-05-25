@@ -16,7 +16,7 @@ class CreateEntriesTable extends Migration
         Schema::create('entries', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
             $table->uuid('employee_uuid');
-            $table->foreign('employee_uuid')->references('uuid')->on('employees');
+//            $table->foreign('employee_uuid')->references('uuid')->on('employees');
             $table->timestamp('start')->nullable();
             $table->timestamp('end')->nullable();
             $table->integer('worked_minutes')->default(0);

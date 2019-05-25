@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\HardwareApi;
 
-use App\Domain\Employee\EmployeeAgregate;
+use App\Domain\Employee\EmployeeAggregate;
 use App\Http\Responses\HardwareApi\CardQueryResponse;
 use App\Http\Responses\HardwareApi\WorkStartedResponse;
 use App\Models\IdCard;
