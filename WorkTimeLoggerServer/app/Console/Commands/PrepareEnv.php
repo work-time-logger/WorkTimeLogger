@@ -4,21 +4,23 @@ namespace App\Console\Commands;
 
 use App\Domain\Employee\EmployeeAggregate;
 use App\Domain\Employee\Exceptions\CouldNotStopWorking;
+use App\Domain\Scanner\ScannerAggregate;
 use App\Models\Employee;
-use App\Models\HardwareScanner;
+use App\Models\Scanner;
 use App\Models\IdCard;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
 class PrepareEnv extends Command
 {
-    const FIRST_EMPLOYEE_UUID    = 'e22d1887-ccbc-471b-b725-6f79b1807e2e';
-    const SECOND_EMPLOYEE_UUID   = 'f9722ae4-dbdf-4514-af92-25a8f1e89171';
-    const THIRD_EMPLOYEE_UUID    = 'b3abf1df-fe0c-4c34-8f65-d31ff9854416';
-    const FIRST_CARD_ID          = '686790c6';
-    const SECOND_CARD_ID         = '01c1759e';
-    const THIRD_CARD_ID          = '0849c760';
-    const HARDWARE_SCANNER_API_TOKEN = 'VERY_SECRET_TEST_TOKEN';
+    const FIRST_EMPLOYEE_UUID  = 'e22d1887-ccbc-471b-b725-6f79b1807e2e';
+    const SECOND_EMPLOYEE_UUID = 'f9722ae4-dbdf-4514-af92-25a8f1e89171';
+    const THIRD_EMPLOYEE_UUID  = 'b3abf1df-fe0c-4c34-8f65-d31ff9854416';
+    const FIRST_CARD_ID        = '686790c6';
+    const SECOND_CARD_ID       = '01c1759e';
+    const THIRD_CARD_ID        = '0849c760';
+    const SCANNER_API_TOKEN    = 'VERY_SECRET_TEST_TOKEN';
+    const SCANNER_UUID         = '17bb79ef-824d-4785-b078-f47bac727039';
 
     /**
      * The name and signature of the console command.
@@ -51,11 +53,11 @@ class PrepareEnv extends Command
      */
     public function handle()
     {
-        $scanner = new HardwareScanner;
-        $scanner->api_token = self::HARDWARE_SCANNER_API_TOKEN;
-        $scanner->name = 'Test Scanner';
-        $scanner->is_active = true;
-        $scanner->save();
+        ScannerAggregate::retrieve(self::SCANNER_UUID)
+            ->createScanner('Test Scanner')
+            ->regenerateApiToken(self::SCANNER_API_TOKEN)
+            ->enable()
+            ->persist();
         
         EmployeeAggregate::retrieve(self::FIRST_EMPLOYEE_UUID)
             ->createEmployee('Janusz', 'Kowalski')

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHardwareScannersTable extends Migration
+class CreateScannersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateHardwareScannersTable extends Migration
      */
     public function up()
     {
-        Schema::create('hardware_scanners', function (Blueprint $table) {
+        Schema::create('scanners', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uuid')->unique();
-            $table->string('api_token')->unique();
+            $table->string('api_token')->unique()->nullable();
             $table->string('name');
             $table->boolean('is_active');
             $table->timestamps();
@@ -30,6 +30,6 @@ class CreateHardwareScannersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hardware_scanners');
+        Schema::dropIfExists('scanners');
     }
 }

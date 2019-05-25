@@ -6,7 +6,7 @@ namespace App\Http\Responses\HardwareApi;
 use App\Domain\Employee\EmployeeAggregate;
 use App\Http\Resources\HardwareScannerResource;
 use App\Models\Employee;
-use App\Models\HardwareScanner;
+use App\Models\Scanner;
 use KDuma\ContentNegotiableResponses\BaseArrayResponse;
 
 class CardQueryResponse extends BaseArrayResponse

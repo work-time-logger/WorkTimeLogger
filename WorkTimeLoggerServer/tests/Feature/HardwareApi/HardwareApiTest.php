@@ -3,12 +3,13 @@
 namespace Tests\Feature\HardwareApi;
 
 use App\Domain\Employee\EmployeeAggregate;
+use App\Domain\Scanner\ScannerAggregate;
 use App\Models\Employee;
 use App\Models\IdCard;
 use App\Models\WorkLog\OpenEntry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Models\HardwareScanner;
+use App\Models\Scanner;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -21,7 +22,7 @@ class HardwareApiTest extends TestCase
     {
         $employee = $this->getNewEmployee();
         
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
         
         $response = $this->get('/hw/card?id='.Str::random(8), [
             'Accept' => 'application/msgpack',
@@ -37,7 +38,7 @@ class HardwareApiTest extends TestCase
         $employee = $this->getNewEmployee();
         $card = $this->getNewCardFor($employee);
         
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
         
         $response = $this->get('/hw/card/'.$card->rfid_id, [
             'Accept' => 'application/msgpack',
@@ -61,7 +62,7 @@ class HardwareApiTest extends TestCase
         $employee = $this->getNewEmployee();
         $card = $this->getNewCardFor($employee);
         
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
         
         $now = today()->setHour(10);
         Carbon::setTestNow($now);
@@ -118,10 +119,10 @@ class HardwareApiTest extends TestCase
         Carbon::setTestNow($now);
         
         $employee = $this->getNewEmployee();
-        $employee->getAgregate()->startWork(Str::uuid(),$now->copy()->subHour())->persist();
+        $employee->getAggregate()->startWork(Str::uuid(),$now->copy()->subHour())->persist();
         $card = $this->getNewCardFor($employee);
         
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
 
         $response = $this->post('/hw/card/'.$card->rfid_id.'/start', [], [
             'Accept' => 'application/msgpack',
@@ -140,10 +141,10 @@ class HardwareApiTest extends TestCase
         Carbon::setTestNow($now);
         
         $employee = $this->getNewEmployee();
-        $employee->getAgregate()->startWork(Str::uuid(),$now->copy()->subWeek())->persist();
+        $employee->getAggregate()->startWork(Str::uuid(),$now->copy()->subWeek())->persist();
         $card = $this->getNewCardFor($employee);
         
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
 
         $response = $this->get('/hw/card/'.$card->rfid_id, [
             'Accept' => 'application/msgpack',
@@ -172,7 +173,7 @@ class HardwareApiTest extends TestCase
         $employee->getAggregate()->startWork($entry_uuid,$now->copy()->subWeek())->persist();
         $card = $this->getNewCardFor($employee);
         
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
 
         $response = $this->post('/hw/card/'.$card->rfid_id.'/start', [], [
             'Accept' => 'application/msgpack',
@@ -198,7 +199,7 @@ class HardwareApiTest extends TestCase
         $employee->getAggregate()->startWork($entry_uuid, $started)->persist();
         $card = $this->getNewCardFor($employee);
 
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
         
         $response = $this->post('/hw/card/'.$card->rfid_id.'/stop/'.$entry_uuid, [], [
             'Accept' => 'application/msgpack',
@@ -260,5 +261,21 @@ class HardwareApiTest extends TestCase
         $card->rfid_id = Str::random(16);
         $employee->IdCards()->save($card);
         return $card;
+    }
+
+    /**
+     * @return Scanner
+     */
+    protected function getNewScanner(): Scanner
+    {
+        $scanner_uuid = Str::uuid();
+        
+        ScannerAggregate::retrieve($scanner_uuid)
+            ->createScanner($this->faker->name)
+            ->regenerateApiToken()
+            ->enable()
+            ->persist();
+
+        return Scanner::byUuid($scanner_uuid);
     }
 }

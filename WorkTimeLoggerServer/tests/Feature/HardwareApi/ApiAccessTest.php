@@ -2,14 +2,16 @@
 
 namespace Tests\Feature\HardwareApi;
 
+use App\Domain\Scanner\ScannerAggregate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Models\HardwareScanner;
+use App\Models\Scanner;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ApiAccessTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     public function testPingingEndpointWithoutAuthorizationToken()
     {
@@ -23,11 +25,9 @@ class ApiAccessTest extends TestCase
 
     public function testPingingEndpointWithInvalidAuthorizationToken()
     {
-        $scanner = factory(HardwareScanner::class)->make();
-        
         $response = $this->get('/hw/ping', [
             'Accept' => 'application/msgpack',
-            'Authorization' => 'Bearer '.$scanner->api_token
+            'Authorization' => 'Bearer '.Str::random()
         ]);
 
         $response
@@ -36,7 +36,7 @@ class ApiAccessTest extends TestCase
     
     public function testPingingEndpointAsAuthenticatedUserUsingJson()
     {
-        $scanner = factory(HardwareScanner::class)->states('inactive')->create();
+        $scanner = $this->getNewScanner();
         
         $response = $this->get('/hw/ping', [
             'Accept' => 'application/json',
@@ -56,7 +56,7 @@ class ApiAccessTest extends TestCase
     
     public function testPingingEndpointAsAuthenticatedUserUsingMessagePack()
     {
-        $scanner = factory(HardwareScanner::class)->create();
+        $scanner = $this->getNewScanner();
         
         $response = $this->get('/hw/ping', [
             'Accept' => 'application/msgpack',
@@ -72,5 +72,21 @@ class ApiAccessTest extends TestCase
                     'is_active' => $scanner->is_active,
                 ]
             ]);
+    }
+
+    /**
+     * @return Scanner
+     */
+    protected function getNewScanner(): Scanner
+    {
+        $scanner_uuid = Str::uuid();
+
+        ScannerAggregate::retrieve($scanner_uuid)
+            ->createScanner($this->faker->name)
+            ->regenerateApiToken()
+            ->enable()
+            ->persist();
+
+        return Scanner::byUuid($scanner_uuid);
     }
 }

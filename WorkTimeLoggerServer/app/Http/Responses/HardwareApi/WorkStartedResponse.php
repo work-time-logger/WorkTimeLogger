@@ -5,7 +5,7 @@ namespace App\Http\Responses\HardwareApi;
 
 use App\Http\Resources\HardwareScannerResource;
 use App\Models\Employee;
-use App\Models\HardwareScanner;
+use App\Models\Scanner;
 use App\Models\WorkLog\OpenEntry;
 use KDuma\ContentNegotiableResponses\BaseArrayResponse;
 

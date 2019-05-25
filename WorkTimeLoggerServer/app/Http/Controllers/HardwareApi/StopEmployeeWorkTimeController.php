@@ -25,7 +25,7 @@ class StopEmployeeWorkTimeController extends Controller
     {
         $card = IdCard::where('rfid_id', $rfid_id)->firstOrFail();
 
-        $card->Employee->getAgregate()
+        $card->Employee->getAggregate()
             ->stopWork($entry_uuid, now())
             ->persist();
 

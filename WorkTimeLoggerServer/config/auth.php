@@ -78,7 +78,7 @@ return [
         
         'scanners' => [
             'driver' => 'eloquent',
-            'model' => App\Models\HardwareScanner::class,
+            'model' => App\Models\Scanner::class,
         ],
 
         // 'users' => [

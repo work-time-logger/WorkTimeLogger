@@ -4,22 +4,22 @@ namespace App\Http\Responses\HardwareApi;
 
 
 use App\Http\Resources\HardwareScannerResource;
-use App\Models\HardwareScanner;
+use App\Models\Scanner;
 use KDuma\ContentNegotiableResponses\BaseArrayResponse;
 
 class PingResponse extends BaseArrayResponse
 {
     /**
-     * @var HardwareScanner
+     * @var Scanner
      */
     public $hardwareScanner;
 
     /**
      * PingResponse constructor.
      *
-     * @param HardwareScanner $hardwareScanner
+     * @param Scanner $hardwareScanner
      */
-    public function __construct(HardwareScanner $hardwareScanner)
+    public function __construct(Scanner $hardwareScanner)
     {
         $this->hardwareScanner = $hardwareScanner;
     }

@@ -27,7 +27,7 @@ class StartEmployeeWorkTimeController extends Controller
 
         $entry_uuid = Str::uuid();
         
-        $card->Employee->getAgregate()
+        $card->Employee->getAggregate()
             ->startWork($entry_uuid, now())
             ->persist();
         

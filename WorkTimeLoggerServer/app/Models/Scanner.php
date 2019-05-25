@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Domain\Employee\EmployeeAggregate;
+use App\Domain\Scanner\ScannerAggregate;
 use Illuminate\Database\Eloquent\Model;
 use KDuma\Eloquent\Uuidable;
 
@@ -15,20 +17,20 @@ use KDuma\Eloquent\Uuidable;
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereApiToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereGuid($guid)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\HardwareScanner whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereApiToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereGuid($guid)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Scanner whereUuid($value)
  * @mixin \Eloquent
  */
-class HardwareScanner extends Model
+class Scanner extends Model
 {
     use Uuidable;
     
@@ -49,6 +51,11 @@ class HardwareScanner extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function getAggregate()
+    {
+        return ScannerAggregate::retrieve($this->uuid);
+    }
 
     /**
      * Get the route key for the model.
