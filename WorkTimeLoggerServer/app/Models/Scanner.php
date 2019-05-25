@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use KDuma\Eloquent\Uuidable;
 
 /**
- * App\Models\HardwareScanner
+ * App\Models\Scanner
  *
  * @property int $id
  * @property string $uuid
- * @property string $api_token
+ * @property string|null $api_token
  * @property string $name
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
