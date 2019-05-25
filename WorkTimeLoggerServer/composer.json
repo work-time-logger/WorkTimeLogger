@@ -85,6 +85,12 @@
             "@php artisan generate:erd erd_graph.svg --format=svg",
             "@php artisan generate:erd erd_graph.png"
         ],
+        "fresh": [
+            "@php artisan migrate:fresh",
+            "@php artisan env:prepare",
+            "composer meta",
+            "php artisan event-projector:replay"
+        ],
         "tail": [
             "@php artisan tail --hide-stack-traces --lines=50"
         ]
