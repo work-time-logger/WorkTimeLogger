@@ -16,7 +16,7 @@ char ota_password[64] = "ota";
 
 bool shouldSaveConfig = false;
 
-IPAddress startWifiManager(bool force);
+void startWifiManager(bool force);
 void read_configuration_from_spiffs();
 void save_configuration_to_spiffs();
 
@@ -27,21 +27,15 @@ void saveConfigCallback () {
 }
 
 void CONFIG_FORCE() {
-    IPAddress ipAddress = startWifiManager(true);
-
-//    Serial.println("local ip");
-//    Serial.println(ipAddress);
+    startWifiManager(true);
 
 }
 
 void CONFIG_INIT() {
-    IPAddress ipAddress = startWifiManager(false);
-
-//    Serial.println("local ip");
-//    Serial.println(ipAddress);
+    startWifiManager(false);
 }
 
-IPAddress startWifiManager(bool force) {
+void startWifiManager(bool force) {
     read_configuration_from_spiffs();
 
     WiFiManagerParameter custom_api_server("server", "API Server Address", api_server, 60);
@@ -58,7 +52,7 @@ IPAddress startWifiManager(bool force) {
     wifiManager.addParameter(&custom_ota_password);
 
     if (
-            (force && !wifiManager.startConfigPortal("WorkTime Logger OnDemand"))
+            (force && !wifiManager.startConfigPortal("WorkTime Logger Configuration", "password"))
             ||
             (!force && !wifiManager.autoConnect("WorkTime Logger Configuration", "password"))
         ) {
@@ -73,8 +67,6 @@ IPAddress startWifiManager(bool force) {
     strcpy(api_token, custom_api_token.getValue());
     strcpy(ota_password, custom_ota_password.getValue());
     save_configuration_to_spiffs();
-
-    return WiFi.localIP();
 }
 
 void save_configuration_to_spiffs() {

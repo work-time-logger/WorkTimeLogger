@@ -6,6 +6,7 @@
 NexPage page_main = NexPage(0, 0, "page0");
 NexText page_main_text_scroll = NexText(0, 2, "g0");
 NexText page_main_text_time = NexText(0, 1, "time");
+NexButton page_main_button_config = NexButton(0, 3, "b0");
 
 NexPage page_enter = NexPage(1, 0, "page1");
 NexButton page_enter_button_no = NexButton(1, 3, "no");
@@ -29,6 +30,7 @@ NexTouch *nex_listen_list[] =
 //    &page_enter,
 //    &page_exit,
 //    &page_stats,
+    &page_main_button_config,
     &page_enter_button_no,
     &page_enter_button_yes,
     &page_exit_button_no,

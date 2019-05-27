@@ -9,6 +9,7 @@ extern NexText page_main_text_time;
 
 extern NexPage page_enter;
 extern NexPage page_exit;
+extern NexButton page_main_button_config;
 extern NexButton page_enter_button_no;
 extern NexButton page_enter_button_yes;
 extern NexButton page_exit_button_no;
