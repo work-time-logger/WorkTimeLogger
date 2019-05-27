@@ -11,16 +11,16 @@ using WorkTimeLoggerEmulator.WinForms.Properties;
 
 namespace WorkTimeLoggerEmulator.WinForms
 {
-    public partial class Form1 : Form
+    public partial class MainEmulatorForm : Form
     {
         private readonly Settings _settings = new Settings();
 
-        public Form1()
+        public MainEmulatorForm()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form_Load(object sender, EventArgs e)
         {
             label1.Text = _settings.endpoint;
             label2.Text = _settings.token;
