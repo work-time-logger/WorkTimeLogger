@@ -1,4 +1,4 @@
-#include <Modules/RTOS.h>
+#include <Modules/Scheduler.h>
 #include <Modules/RTC.h>
 #include <Modules/HMI.h>
 
@@ -32,5 +32,5 @@ void refresh_clock() {
 
 void CLOCK_INIT() {
     RTC_INIT();
-    clock_scheduler.attach(0.5, refresh_clock);
+    clock_scheduler.attach(5, refresh_clock);
 }

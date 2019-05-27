@@ -1,7 +1,7 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-err58-cpp"
 
-#include "RTOS.h"
+#include "Scheduler.h"
 
 Ticker buzzer_scheduler;
 Ticker workflow_scheduler;

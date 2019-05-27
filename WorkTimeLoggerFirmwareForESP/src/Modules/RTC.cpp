@@ -7,11 +7,11 @@ DateTime now;
 
 void RTC_INIT() {
     RTC.begin();
-//    if (! RTC.isrunning()) {
-//        Serial.println("RTC is NOT running!");
-//        // following line sets the RTC to the date & time this sketch was compiled
-//        RTC.adjust(DateTime(__DATE__, __TIME__));
-//    }
+    if (! RTC.isrunning()) {
+        Serial.println("RTC is NOT running!");
+        // following line sets the RTC to the date & time this sketch was compiled
+        RTC.adjust(DateTime(__DATE__, __TIME__));
+    }
 }
 
 void RTC_READ() {
@@ -29,9 +29,9 @@ char *RTC_TIME(const char *separator, bool dont_refresh) {
     strcat(rtc_read_time, separator);
     if(now.minute() < 10)strcat(rtc_read_time, "0");
     strcat(rtc_read_time, itoa(now.minute(), bufor, 10));
-    strcat(rtc_read_time, separator);
-    if(now.second() < 10)strcat(rtc_read_time, "0");
-    strcat(rtc_read_time, itoa(now.second(), bufor, 10));
+//    strcat(rtc_read_time, separator);
+//    if(now.second() < 10)strcat(rtc_read_time, "0");
+//    strcat(rtc_read_time, itoa(now.second(), bufor, 10));
 
     return rtc_read_time;
 }

@@ -81,7 +81,7 @@
 
 #include <Arduino.h>
 #include <Modules/HMI.h>
-#include <Modules/RTOS.h>
+#include <Modules/Scheduler.h>
 #include <Modules/RFID.h>
 #include <Modules/RTC.h>
 #include <Wire.h>
@@ -89,53 +89,48 @@
 #include <App/CardReader.h>
 #include <App/Workflow.h>
 
-#include <PCF8574.h> // Required for PCF8574
-/** PCF8574 instance */
-PCF8574 expander;
+
+#include <Config/ConfigManager.h>
+#include <Config/OverTheAirUpdater.h>
+#include <Modules/Buzzer.h>
+
 
 //=======================================================================
-void changeState()
-{
-    static int i = 0;
-    digitalWrite(LED_BUILTIN, !(digitalRead(LED_BUILTIN)));  //Invert Current State of LED_BUILTIN
-
-    expander.toggle(0);
-//    Serial.println("expander.toggle(0)");
-
-    page_stats.show();
-
-    char bufor[16];
-    page_stats_text_day.setText(itoa(i++, bufor, 10));
-}
-
+//void changeState()
+//{
+////    static int i = 0;
+//    digitalWrite(LED_BUILTIN, !(digitalRead(LED_BUILTIN)));  //Invert Current State of LED_BUILTIN
+//
+//    BUZZER_START(0.25);
+//
+////    page_stats.show();
+//
+////    char bufor[16];
+////    page_stats_text_day.setText(itoa(i++, bufor, 10));
+//}
 //=======================================================================
 
 
 
 void setup(void)
 {
-    Serial.begin(9600);
-
-    Wire.begin();
-//    Serial.println("Wire.begin()");
-    expander.begin(0x20);
-//    Serial.println("expander.begin(0x20)");
-    expander.pinMode(0, OUTPUT);
-//    Serial.println("expander.pinMode(0, OUTPUT)");
-
     pinMode(LED_BUILTIN,OUTPUT);
-    scheduler.attach(10, changeState);
+    Serial.begin(9600);
+    Wire.begin();
 
-
+    CONFIG_INIT();
+    OTA_INIT();
+    BUZZER_INIT();
     HMI_INIT();
-
     WORKFLOW_INIT();
     CARDREADER_INIT();
     CLOCK_INIT();
+//    scheduler.attach(10, changeState);
 }
 
 void loop(void)
 {
+    OTA_EVENT();
     CARDREADER_EVENT();
     HMI_EVENT();
     WORKFLOW_EVENT();

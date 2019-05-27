@@ -1,11 +1,13 @@
 #include <Modules/HMI.h>
-#include <Modules/RTOS.h>
+#include <Modules/Scheduler.h>
+#include <Modules/Buzzer.h>
 #include "Workflow.h"
 
 workflow_stage_enum workflow_stage = IDLE;
 workflow_stage_enum workflow_last_stage = UNKNOWN;
 
 void no_button_callback(void *ptr) {
+    BUZZER_START(0.01);
     if (workflow_stage != ENTER && workflow_stage != EXIT) return;
     page_main.show();
     workflow_stage = IDLE;
@@ -19,6 +21,7 @@ void exit_stats() {
 }
 
 void yes_button_callback(void *ptr) {
+    BUZZER_START(0.01);
     if(workflow_stage == ENTER){
         page_enter.show();
         workflow_stage = IDLE;

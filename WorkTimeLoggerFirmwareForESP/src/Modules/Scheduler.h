@@ -1,5 +1,5 @@
-#ifndef RTOS_H
-#define RTOS_H
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
 
 #include <Ticker.h>
 
@@ -8,4 +8,4 @@ extern Ticker workflow_scheduler;
 extern Ticker clock_scheduler;
 extern Ticker scheduler;
 
-#endif //RTOS_H
+#endif //SCHEDULER_H
