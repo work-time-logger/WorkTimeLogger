@@ -16,9 +16,9 @@ class PrepareEnv extends Command
     const FIRST_EMPLOYEE_UUID  = 'e22d1887-ccbc-471b-b725-6f79b1807e2e';
     const SECOND_EMPLOYEE_UUID = 'f9722ae4-dbdf-4514-af92-25a8f1e89171';
     const THIRD_EMPLOYEE_UUID  = 'b3abf1df-fe0c-4c34-8f65-d31ff9854416';
-    const FIRST_CARD_ID        = '686790c6';
-    const SECOND_CARD_ID       = '01c1759e';
-    const THIRD_CARD_ID        = '0849c760';
+    const FIRST_CARD_ID        = '74-0B-2A-EB';
+    const SECOND_CARD_ID       = '9B-50-4C-79';
+    const THIRD_CARD_ID        = '69-17-79-07';
     const SCANNER_API_TOKEN    = 'VERY_SECRET_TEST_TOKEN';
     const SCANNER_UUID         = '17bb79ef-824d-4785-b078-f47bac727039';
 
