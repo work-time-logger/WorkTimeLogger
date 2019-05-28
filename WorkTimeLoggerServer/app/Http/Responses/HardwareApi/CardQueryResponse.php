@@ -29,6 +29,7 @@ class CardQueryResponse extends BaseArrayResponse
             'first_name' => $this->employee->first_name,
             'last_name' => $this->employee->last_name,
             'worked_today' => $this->getWorkedToday(),
+            'worked_period' => $this->getWorkedPeriod(),
             'open_entry' => $this->getOpenEntry(),
             'open_entry_working' => $this->getOpenEntryWorkTime(),
             'has_invalid_entries' => $this->getHasInvalidEntries(),
@@ -75,5 +76,10 @@ class CardQueryResponse extends BaseArrayResponse
         $entry = OpenEntry::byUuid($entry);
         
         return $entry->start->diffInMinutes();
+    }
+
+    private function getWorkedPeriod()
+    {
+        return (int) $this->employee->DailySummaries()->whereBetween('day', [today()->startOfWeek()->format('Y-m-d'), today()->endOfWeek()->format('Y-m-d')])->sum('worked_minutes');
     }
 }

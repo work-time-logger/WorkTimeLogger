@@ -52,6 +52,7 @@ class HardwareApiTest extends TestCase
                 'first_name' => $employee->first_name,
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
+                'worked_period' => 0,
                 'open_entry' => null,
                 'open_entry_working' => 0,
                 'has_invalid_entries' => false,
@@ -80,6 +81,7 @@ class HardwareApiTest extends TestCase
                 'first_name' => $employee->first_name,
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
+                'worked_period' => 0,
                 'open_entry' => null,
                 'open_entry_working' => 0,
                 'has_invalid_entries' => false,
@@ -111,6 +113,7 @@ class HardwareApiTest extends TestCase
                 'first_name' => $employee->first_name,
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
+                'worked_period' => 0,
                 'open_entry' => $entry_id,
                 'open_entry_working' => 15,
                 'has_invalid_entries' => false,
@@ -163,6 +166,7 @@ class HardwareApiTest extends TestCase
                 'first_name' => $employee->first_name,
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
+                'worked_period' => 0,
                 'open_entry' => null,
                 'open_entry_working' => 0,
                 'has_invalid_entries' => true,
@@ -232,6 +236,53 @@ class HardwareApiTest extends TestCase
                 'first_name' => $employee->first_name,
                 'last_name' => $employee->last_name,
                 'worked_today' => 360,
+                'worked_period' => 360,
+                'open_entry' => null,
+                'open_entry_working' => 0,
+                'has_invalid_entries' => false,
+            ]);
+    }
+
+
+    public function testStoppingWorktimeOvernight()
+    {
+        $started = today()->subDay()->setHour(22);
+        $now = today()->setHour(6);
+        Carbon::setTestNow($now);
+
+        $employee = $this->getNewEmployee();
+        $entry_uuid = Str::uuid();
+        $employee->getAggregate()->startWork($entry_uuid, $started)->persist();
+        $card = $this->getNewCardFor($employee);
+
+        $scanner = $this->getNewScanner();
+        
+        $response = $this->post('/hw/card/'.$card->identifier.'/stop/'.$entry_uuid, [], [
+            'Accept' => 'application/msgpack',
+            'Authorization' => 'Bearer '.$scanner->api_token
+        ]);
+
+        $response->assertStatus(200)
+            ->assertExactMessagePack([
+                'entry' => $entry_uuid,
+                'start' => $started->format('Y-m-d H:i:s'),
+                'end' => $now->format('Y-m-d H:i:s'),
+                'worked_minutes' => 480,
+            ]);
+        
+        $response = $this->get('/hw/card/'.$card->identifier, [
+            'Accept' => 'application/msgpack',
+            'Authorization' => 'Bearer '.$scanner->api_token
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertExactMessagePack([
+                'employee' => $employee->uuid,
+                'first_name' => $employee->first_name,
+                'last_name' => $employee->last_name,
+                'worked_today' => 360,
+                'worked_period' => 480,
                 'open_entry' => null,
                 'open_entry_working' => 0,
                 'has_invalid_entries' => false,
