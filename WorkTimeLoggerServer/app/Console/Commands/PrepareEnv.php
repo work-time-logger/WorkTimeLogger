@@ -69,16 +69,16 @@ class PrepareEnv extends Command
             ->persist();
         
         EmployeeAggregate::retrieve(self::SECOND_EMPLOYEE_UUID)
-            ->createEmployee('Ignacy', 'Macierewicz')
-            ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(10))
-            ->stopWork($entry_uuid, today()->subDay()->setHour(14))
+            ->createEmployee('Grzegorz', 'Daniszewski')
+            ->startWork($entry_uuid = Str::uuid(), today()->setHour(6))
+            ->stopWork($entry_uuid, today()->setHour(12))
             ->registerCard(self::SECOND_CARD_ID)
             ->persist();
         
         EmployeeAggregate::retrieve(self::THIRD_EMPLOYEE_UUID)
-            ->createEmployee('Ewa', 'Marcinkiewicz')
-            ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(15))
-            ->stopWork($entry_uuid, today()->subDay()->setHour(18))
+            ->createEmployee('Krystian', 'Duma')
+            ->startWork($entry_uuid = Str::uuid(), today()->subDay()->setHour(23))
+            ->stopWork($entry_uuid, today()->setHour(6))
             ->registerCard(self::THIRD_CARD_ID)
             ->persist();
     }
