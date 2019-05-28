@@ -7,6 +7,7 @@ use App\Domain\Employee\EmployeeAggregate;
 use App\Http\Resources\HardwareScannerResource;
 use App\Models\Employee;
 use App\Models\Scanner;
+use App\Models\WorkLog\OpenEntry;
 use KDuma\ContentNegotiableResponses\BaseArrayResponse;
 
 class CardQueryResponse extends BaseArrayResponse
@@ -29,6 +30,7 @@ class CardQueryResponse extends BaseArrayResponse
             'last_name' => $this->employee->last_name,
             'worked_today' => $this->getWorkedToday(),
             'open_entry' => $this->getOpenEntry(),
+            'open_entry_working' => $this->getOpenEntryWorkTime(),
             'has_invalid_entries' => $this->getHasInvalidEntries(),
         ];
     }
@@ -61,5 +63,17 @@ class CardQueryResponse extends BaseArrayResponse
     private function getWorkedToday()
     {
         return optional($this->employee->DailySummaries()->where('day', today()->format('Y-m-d'))->first())->worked_minutes ?? 0;
+    }
+
+    private function getOpenEntryWorkTime()
+    {
+        $entry = $this->getOpenEntry();
+        
+        if($entry == null)
+            return 0;
+
+        $entry = OpenEntry::byUuid($entry);
+        
+        return $entry->start->diffInMinutes();
     }
 }

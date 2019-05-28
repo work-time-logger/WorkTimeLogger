@@ -53,6 +53,7 @@ class HardwareApiTest extends TestCase
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
                 'open_entry' => null,
+                'open_entry_working' => 0,
                 'has_invalid_entries' => false,
             ]);
     }
@@ -80,6 +81,7 @@ class HardwareApiTest extends TestCase
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
                 'open_entry' => null,
+                'open_entry_working' => 0,
                 'has_invalid_entries' => false,
             ]);
         
@@ -94,6 +96,8 @@ class HardwareApiTest extends TestCase
                 'entry' => $entry_id = OpenEntry::firstOrFail()->uuid,
                 'start' => $now->format('Y-m-d H:i:s'),
             ]);
+
+        Carbon::setTestNow($now->clone()->addMinutes(15));
         
         $response = $this->get('/hw/card/'.$card->identifier, [
             'Accept' => 'application/msgpack',
@@ -108,6 +112,7 @@ class HardwareApiTest extends TestCase
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
                 'open_entry' => $entry_id,
+                'open_entry_working' => 15,
                 'has_invalid_entries' => false,
             ]);
         
@@ -159,6 +164,7 @@ class HardwareApiTest extends TestCase
                 'last_name' => $employee->last_name,
                 'worked_today' => 0,
                 'open_entry' => null,
+                'open_entry_working' => 0,
                 'has_invalid_entries' => true,
             ]);
     }
@@ -227,6 +233,7 @@ class HardwareApiTest extends TestCase
                 'last_name' => $employee->last_name,
                 'worked_today' => 360,
                 'open_entry' => null,
+                'open_entry_working' => 0,
                 'has_invalid_entries' => false,
             ]);
     }
