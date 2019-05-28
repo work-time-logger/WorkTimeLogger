@@ -15,6 +15,8 @@ struct QueryResponse {
     char first_name[50];
     char last_name[50];
     int worked_today;
+    int worked_period;
+    int open_entry_working;
     char open_entry[50];
     bool has_invalid_entries;
 };

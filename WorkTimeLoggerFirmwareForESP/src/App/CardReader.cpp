@@ -4,9 +4,12 @@
 #include <Modules/Buzzer.h>
 #include "CardReader.h"
 #include "Workflow.h"
+#include "StringHelper.h"
 
 char last_read_card[50];
 QueryResponse last_query_response;
+
+
 
 void cardRead(char read_card[])
 {
@@ -39,9 +42,8 @@ void cardRead(char read_card[])
         page_exit.show();
         page_enter_exit_text_name.setText(name);
         char buf[50];
-        char buf2[50];
-        sprintf(buf2, "%s min.", itoa(last_query_response.worked_today, buf, 10));
-        page_exit_text_day.setText(buf2);
+        format_minutes(last_query_response.open_entry_working, buf);
+        page_exit_text_day.setText(buf);
     }
 
 

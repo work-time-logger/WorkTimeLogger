@@ -5,6 +5,7 @@
 #include <Modules/WebApi.h>
 #include "Workflow.h"
 #include "CardReader.h"
+#include "StringHelper.h"
 
 workflow_stage_enum workflow_stage = IDLE;
 workflow_stage_enum workflow_last_stage = UNKNOWN;
@@ -43,12 +44,13 @@ void yes_button_callback(void *ptr) {
 
     if(workflow_stage == EXIT){
         WEBAPI_END(last_read_card, last_query_response.open_entry);
-        page_stats.show();
         char buf[50];
-        char buf2[50];
-        sprintf(buf2, "%s min.", itoa(last_query_response.worked_today, buf, 10));
-        page_stats_text_day.setText(buf2);
-        page_stats_text_period.setText(buf2);
+        last_query_response = WEBAPI_QUERY(last_read_card);
+        page_stats.show();
+        format_minutes(last_query_response.worked_today, buf);
+        page_stats_text_day.setText(buf);
+        format_minutes(last_query_response.worked_period, buf);
+        page_stats_text_period.setText(buf);
         workflow_stage = STATS;
         workflow_scheduler.once(5, exit_stats);
 

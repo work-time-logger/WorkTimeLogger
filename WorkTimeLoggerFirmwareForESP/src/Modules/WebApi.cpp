@@ -99,6 +99,8 @@ QueryResponse WEBAPI_QUERY(const String& card_id) {
                 strcpy(WEBAPI_QUERY_RESPONSE.last_name, json["last_name"].as<char *>());
 //                Serial.println("worked_today");
                 WEBAPI_QUERY_RESPONSE.worked_today = json["worked_today"].as<int>();
+                WEBAPI_QUERY_RESPONSE.worked_period = json["worked_period"].as<int>();
+                WEBAPI_QUERY_RESPONSE.open_entry_working = json["open_entry_working"].as<int>();
 //                Serial.println("open_entry");
                 strlcpy(WEBAPI_QUERY_RESPONSE.open_entry, json["open_entry"] | "NULL", sizeof(WEBAPI_QUERY_RESPONSE.open_entry));
 //                Serial.println("has_invalid_entries");
