@@ -51,6 +51,12 @@ void startWifiManager(bool force) {
     wifiManager.addParameter(&custom_api_server);
     wifiManager.addParameter(&custom_ota_password);
 
+    if(force) {
+        ESP.eraseConfig();
+        wifiManager.resetSettings();
+        ESP.reset();
+    }
+
     if (
             (force && !wifiManager.startConfigPortal("WorkTime Logger Configuration", "password"))
             ||
