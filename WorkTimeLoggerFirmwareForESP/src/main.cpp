@@ -93,6 +93,7 @@
 #include <Config/ConfigManager.h>
 #include <Config/OverTheAirUpdater.h>
 #include <Modules/Buzzer.h>
+#include <Modules/WebApi.h>
 
 
 //=======================================================================
@@ -126,6 +127,20 @@ void setup(void)
     CARDREADER_INIT();
     CLOCK_INIT();
 //    scheduler.attach(10, changeState);
+
+
+//    auto start = WEBAPI_START("74-0B-2A-EB");
+//    delay(60000);
+//
+//    auto query = WEBAPI_QUERY("74-0B-2A-EB");
+//    Serial.println(query.open_entry);
+//
+//    auto stop = WEBAPI_END("74-0B-2A-EB", query.open_entry);
+//    Serial.println(stop.start);
+//    Serial.println(stop.end);
+//    Serial.print("stop.worked_minutes = ");
+//    Serial.print(stop.worked_minutes);
+//    Serial.println(";");
 }
 
 void loop(void)

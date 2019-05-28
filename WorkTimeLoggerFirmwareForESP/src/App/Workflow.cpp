@@ -2,7 +2,9 @@
 #include <Modules/Scheduler.h>
 #include <Modules/Buzzer.h>
 #include <Config/ConfigManager.h>
+#include <Modules/WebApi.h>
 #include "Workflow.h"
+#include "CardReader.h"
 
 workflow_stage_enum workflow_stage = IDLE;
 workflow_stage_enum workflow_last_stage = UNKNOWN;
@@ -32,14 +34,21 @@ void exit_stats() {
 void yes_button_callback(void *ptr) {
     BUZZER_START(0.01);
     if(workflow_stage == ENTER){
-        page_enter.show();
+        WEBAPI_START(last_read_card);
+        page_main.show();
         workflow_stage = IDLE;
 
         return;
     }
 
     if(workflow_stage == EXIT){
+        WEBAPI_END(last_read_card, last_query_response.open_entry);
         page_stats.show();
+        char buf[50];
+        char buf2[50];
+        sprintf(buf2, "%s min.", itoa(last_query_response.worked_today, buf, 10));
+        page_stats_text_day.setText(buf2);
+        page_stats_text_period.setText(buf2);
         workflow_stage = STATS;
         workflow_scheduler.once(5, exit_stats);
 
