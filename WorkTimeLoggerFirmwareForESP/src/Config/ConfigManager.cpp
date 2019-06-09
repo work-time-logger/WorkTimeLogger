@@ -13,7 +13,7 @@
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 
 char api_server[64] = "https://wtls.duma.dev/hw/";
-char api_token[64];
+char api_token[96];
 char ota_password[64] = "ota";
 
 bool shouldSaveConfig = false;
@@ -41,7 +41,7 @@ void startWifiManager(bool force) {
     read_configuration_from_spiffs();
 
     WiFiManagerParameter custom_api_server("server", "API Server Address", api_server, 60);
-    WiFiManagerParameter custom_api_token("token", "API Server Token", api_token, 60);
+    WiFiManagerParameter custom_api_token("token", "API Server Token", api_token, 80);
     WiFiManagerParameter custom_ota_password("ota_password", "OTA Updater Password", ota_password, 60);
 
     WiFiManager wifiManager;

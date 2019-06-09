@@ -24,19 +24,22 @@ void request(String path, bool post, void (*callback)(HTTPClient &, int)) {
     path.toCharArray(path_buffer, 150);
     char endpoint[200];
     sprintf(endpoint, "%s%s", CONFIG_GET_SERVER(), path_buffer);
-    char bearer[50];
+    char bearer[120];
     sprintf(bearer, "Bearer %s", CONFIG_GET_TOKEN());
 
 //    Serial.print("[HTTPS] begin...\n");
-    if (https.begin(*client, endpoint)) {  // if (https.begin(client, endpoint)) {  // for HTTP
+    if (https.begin(*client, endpoint)) {
+//     if (https.begin(client, endpoint)) {  // for HTTP
         https.addHeader("Accept", "application/json");
         https.addHeader("Authorization", bearer);
 
 //        Serial.print("[HTTPS] GET...\n");
+//        Serial.print(bearer);
         // start connection and send HTTP header
         int httpCode = post ? https.POST("") : https.GET();
 
         // httpCode will be negative on error
+//         Serial.print("[HTTPS] GET...\n");
         if (httpCode > 0) {
             // HTTP header has been send and Server response header has been handled
 //            Serial.printf("[HTTPS] GET... code: %d\n", httpCode);
@@ -48,7 +51,8 @@ void request(String path, bool post, void (*callback)(HTTPClient &, int)) {
 //            Serial.println(payload);
 //            }
         } else {
-            Serial.printf("[HTTPS] GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
+//            Serial.printf("[HTTPS] GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
+            Serial.printf("[HTTPS] GET... failed, error: %s\n", HTTPClient::errorToString(httpCode).c_str());
         }
 
         https.end();
