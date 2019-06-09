@@ -246,8 +246,8 @@ class HardwareApiTest extends TestCase
 
     public function testStoppingWorktimeOvernight()
     {
-        $started = today()->subDay()->setHour(22);
-        $now = today()->setHour(6);
+        $started = today()->subDay()->startOfWeek()->setHour(22);
+        $now = $started->clone()->addDay()->setHour(6);
         Carbon::setTestNow($now);
 
         $employee = $this->getNewEmployee();
