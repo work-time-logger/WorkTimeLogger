@@ -1,3 +1,5 @@
+// App/StringHelper.h
+
 #ifndef STRINGHELPER_H
 #define STRINGHELPER_H
 

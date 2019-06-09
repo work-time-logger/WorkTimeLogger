@@ -1,3 +1,5 @@
+// Config/ConfigManager.h
+
 #ifndef CONFIGMANAGER_H
 #define CONFIGMANAGER_H
 

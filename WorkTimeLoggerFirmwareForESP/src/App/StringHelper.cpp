@@ -1,3 +1,5 @@
+// App/StringHelper.cpp
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "StringHelper.h"
