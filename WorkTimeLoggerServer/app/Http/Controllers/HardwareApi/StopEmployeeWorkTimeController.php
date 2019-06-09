@@ -26,7 +26,7 @@ class StopEmployeeWorkTimeController extends Controller
         $card = Card::where('identifier', $card_identifier)->firstOrFail();
 
         $card->Employee->getAggregate()
-            ->stopWork($entry_uuid, now())
+            ->stopWork($entry_uuid, now(), $request->user())
             ->persist();
 
         $entry = Entry::byUuid($entry_uuid);
