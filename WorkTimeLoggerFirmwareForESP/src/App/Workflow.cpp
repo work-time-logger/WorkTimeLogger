@@ -71,7 +71,7 @@ void WORKFLOW_INIT() {
 void WORKFLOW_EVENT() {
     if(workflow_last_stage != workflow_stage){
         if(workflow_stage == IDLE)
-            sendCommand("dim=20");
+            sendCommand("dim=5");
         else
             sendCommand("dim=100");
 
