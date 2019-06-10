@@ -1,10 +1,36 @@
-// Modules/WebApi.cpp
+#include "WebApiBackend.h"
 
-#include "WebApi.h"
+void web_api_backend_init(const config_manager_interface * config);
+
+PingResponse web_api_backend_ping();
+QueryResponse web_api_backend_query(const String& card_id);
+StartResponse web_api_backend_start(const String& card_id);
+EndResponse web_api_backend_end(const String& card_id, const String& entry_id);
+
+static const struct backend_interface web_api_backend = {
+        web_api_backend_init,
+        web_api_backend_ping,
+        web_api_backend_query,
+        web_api_backend_start,
+        web_api_backend_end
+};
+
+const struct backend_interface *web_api_backend_get() {
+    return &web_api_backend;
+}
+
+
+
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
-#include <Config/ConfigManager.h>
+#include <HW/Drivers/GenericConfigManager.h>
 #include <ArduinoJson.h>
+
+const config_manager_interface * web_api_backend_config;
+
+void web_api_backend_init(const config_manager_interface * config){
+    web_api_backend_config = config;
+}
 
 // Fingerprint for demo URL, expires on June 2, 2019, needs to be updated well before this date
 //const uint8_t fingerprint[20] = {0x5A, 0xCF, 0xFE, 0xF0, 0xF1, 0xA6, 0xF4, 0x5F, 0xD2, 0x11, 0x11, 0xC6, 0x1D, 0x2F, 0x0E, 0xBC, 0x39, 0x8D, 0x50, 0xE0};
@@ -23,9 +49,9 @@ void request(String path, bool post, void (*callback)(HTTPClient &, int)) {
     char path_buffer[150];
     path.toCharArray(path_buffer, 150);
     char endpoint[200];
-    sprintf(endpoint, "%s%s", CONFIG_GET_SERVER(), path_buffer);
+    sprintf(endpoint, "%s%s", web_api_backend_config->get_server(), path_buffer);
     char bearer[120];
-    sprintf(bearer, "Bearer %s", CONFIG_GET_TOKEN());
+    sprintf(bearer, "Bearer %s", web_api_backend_config->get_token());
 
 //    Serial.print("[HTTPS] begin...\n");
     if (https.begin(*client, endpoint)) {
@@ -64,7 +90,7 @@ void request(String path, bool post, void (*callback)(HTTPClient &, int)) {
 
 PingResponse WEBAPI_PING_RESPONSE = PingResponse();
 
-PingResponse WEBAPI_PING() {
+PingResponse web_api_backend_ping() {
     request("ping", false, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
@@ -87,7 +113,7 @@ PingResponse WEBAPI_PING() {
 
 QueryResponse WEBAPI_QUERY_RESPONSE = QueryResponse();
 
-QueryResponse WEBAPI_QUERY(const String& card_id) {
+QueryResponse web_api_backend_query(const String& card_id) {
     WEBAPI_QUERY_RESPONSE.valid = false;
     request("card/" + card_id, false, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {
@@ -124,7 +150,7 @@ QueryResponse WEBAPI_QUERY(const String& card_id) {
 
 StartResponse WEBAPI_START_RESPONSE = StartResponse();
 
-StartResponse WEBAPI_START(const String& card_id) {
+StartResponse web_api_backend_start(const String& card_id) {
     WEBAPI_START_RESPONSE.valid = false;
     request("card/" + card_id + "/start", true, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {
@@ -147,7 +173,7 @@ StartResponse WEBAPI_START(const String& card_id) {
 
 EndResponse WEBAPI_END_RESPONSE = EndResponse();
 
-EndResponse WEBAPI_END(const String& card_id, const String& entry_id) {
+EndResponse web_api_backend_end(const String& card_id, const String& entry_id) {
     WEBAPI_END_RESPONSE.valid = false;
     request("card/" + card_id + "/stop/" + entry_id, true, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {

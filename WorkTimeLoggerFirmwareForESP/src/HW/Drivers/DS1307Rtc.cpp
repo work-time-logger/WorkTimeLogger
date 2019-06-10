@@ -1,13 +1,27 @@
-// Modules/RTC.cpp
+#include "DS1307Rtc.h"
 
-#include "RTC.h"
+void ds1307_rtc_init(void);
+char* ds1307_rtc_get_time(const char *separator = ":", bool dont_refresh = false);
+char* ds1307_rtc_get_date(const char *separator = "/", bool dont_refresh = false);
+
+static const struct rtc_interface ds1307_led = {
+    ds1307_rtc_init,
+    ds1307_rtc_get_time,
+    ds1307_rtc_get_date
+};
+
+const struct rtc_interface *ds1307_rtc_get() {
+    return &ds1307_led;
+}
+
+#include <RTClib.h>
 
 RTC_DS1307 RTC;
 char rtc_read_time[8];
 char rtc_read_date[10];
 DateTime now;
 
-void RTC_INIT() {
+void ds1307_rtc_init(void){
     RTC.begin();
     if (! RTC.isrunning()) {
         Serial.println("RTC is NOT running!");
@@ -20,7 +34,8 @@ void RTC_READ() {
     now = RTC.now();
 }
 
-char *RTC_TIME(const char *separator, bool dont_refresh) {
+char* ds1307_rtc_get_time(const char *separator, bool dont_refresh){
+
     rtc_read_time[0] = 0;
     if(!dont_refresh)
         RTC_READ();
@@ -38,7 +53,8 @@ char *RTC_TIME(const char *separator, bool dont_refresh) {
     return rtc_read_time;
 }
 
-char *RTC_DATE(const char *separator, bool dont_refresh) {
+char* ds1307_rtc_get_date(const char *separator, bool dont_refresh){
+
     rtc_read_date[0] = 0;
     if(!dont_refresh)
         RTC_READ();

@@ -1,20 +1,30 @@
-// Config/OverTheAirUpdater.cpp
+#include "GenericOverTheAirUpdater.h"
+
+void generic_ota_updater_init(const config_manager_interface * config);
+void generic_ota_updater_event();
+
+static const struct ota_updater_interface generic_ota_updater = {
+        generic_ota_updater_init,
+        generic_ota_updater_event
+};
+
+const struct ota_updater_interface *generic_ota_updater_get() {
+    return &generic_ota_updater;
+}
+
 
 #include <ArduinoOTA.h>
-#include "OverTheAirUpdater.h"
-#include "ConfigManager.h"
 
-
-void OTA_INIT() {
+void generic_ota_updater_init(const config_manager_interface * config) {
 
     // Port defaults to 8266
     // ArduinoOTA.setPort(8266);
 
     // Hostname defaults to esp8266-[ChipID]
-     ArduinoOTA.setHostname("wtl");
+    // ArduinoOTA.setHostname("wtl");
 
     // No authentication by default
-    ArduinoOTA.setPassword(CONFIG_GET_OTA_PASSWORD());
+    ArduinoOTA.setPassword(config->get_ota_password());
 
     ArduinoOTA.onStart([]() {
         String type;
@@ -53,6 +63,6 @@ void OTA_INIT() {
     Serial.println(WiFi.localIP());
 }
 
-void OTA_EVENT() {
+void generic_ota_updater_event() {
     ArduinoOTA.handle();
 }

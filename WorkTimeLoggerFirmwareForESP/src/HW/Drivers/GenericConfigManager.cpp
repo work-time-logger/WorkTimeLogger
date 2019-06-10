@@ -1,9 +1,26 @@
-// Config/ConfigManager.cpp
+#include "GenericConfigManager.h"
 
-#include "ConfigManager.h"
+void generic_config_manager_init(const device_capabilities * device);
+void generic_config_manager_force();
+char * generic_config_manager_get_server();
+char * generic_config_manager_get_token();
+char * generic_config_manager_get_ota_password();
 
+static const struct config_manager_interface generic_config_manager = {
+        generic_config_manager_init,
+        generic_config_manager_force,
+        generic_config_manager_get_server,
+        generic_config_manager_get_token,
+        generic_config_manager_get_ota_password
+};
+
+const struct config_manager_interface *generic_config_manager_get() {
+    return &generic_config_manager;
+}
+
+
+#include <IPAddress.h>
 #include <FS.h>                   //this needs to be first, or it all crashes and burns...
-
 #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
 
 //needed for library
@@ -12,6 +29,7 @@
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 
+const device_capabilities * current_device;
 char api_server[64] = "https://wtls.duma.dev/hw/";
 char api_token[96];
 char ota_password[64] = "ota";
@@ -22,19 +40,30 @@ void startWifiManager(bool force);
 void read_configuration_from_spiffs();
 void save_configuration_to_spiffs();
 
+void generic_config_manager_init(const device_capabilities * device) {
+    current_device = device;
+    startWifiManager(false);
+}
+
+void generic_config_manager_force() {
+    startWifiManager(true);
+}
+
+char * generic_config_manager_get_server() {
+    return api_server;
+}
+
+char * generic_config_manager_get_token() {
+    return api_token;
+}
+
+char * generic_config_manager_get_ota_password() {
+    return ota_password;
+}
+
 
 void saveConfigCallback () {
-//    Serial.println("Should save config");
     shouldSaveConfig = true;
-}
-
-void CONFIG_FORCE() {
-    startWifiManager(true);
-
-}
-
-void CONFIG_INIT() {
-    startWifiManager(false);
 }
 
 void startWifiManager(bool force) {
@@ -60,9 +89,9 @@ void startWifiManager(bool force) {
     }
 
     if (
-            (force && !wifiManager.startConfigPortal("WorkTime Logger Configuration", "password"))
+            (force && !wifiManager.startConfigPortal(current_device->wifi_name, current_device->wifi_password))
             ||
-            (!force && !wifiManager.autoConnect("WorkTime Logger Configuration", "password"))
+            (!force && !wifiManager.autoConnect(current_device->wifi_name, current_device->wifi_password))
         ) {
         Serial.println("failed to connect and hit timeout");
         delay(3000);
@@ -124,16 +153,4 @@ void read_configuration_from_spiffs() {
     } else {
         Serial.println("failed to mount FS");
     }
-}
-
-char *CONFIG_GET_TOKEN() {
-    return api_token;
-}
-
-char *CONFIG_GET_SERVER() {
-    return api_server;
-}
-
-char *CONFIG_GET_OTA_PASSWORD() {
-    return ota_password;
 }
