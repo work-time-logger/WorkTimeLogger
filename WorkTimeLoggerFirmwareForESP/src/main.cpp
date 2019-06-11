@@ -4,11 +4,17 @@
 #include <interfaces/hal/hal_interface.h>
 #include <interfaces/app_logic/main_logic_interface.h>
 
-#include <hardware/compact_hal.h>
-#include <app_logic/compact_logic.h>
-
-#include <hardware/full_hal.h>
-#include <app_logic/full_logic.h>
+#ifndef HARDWARE_VERSION
+    #error "No valid HARDWARE_VERSION provided"
+#elif HARDWARE_VERSION == compact
+    #include <hardware/compact_hal.h>
+    #include <app_logic/compact_logic.h>
+#elif HARDWARE_VERSION == full
+    #include <hardware/full_hal.h>
+    #include <app_logic/full_logic.h>
+#else
+    #error "Unknown HARDWARE_VERSION provided"
+#endif
 
 #include <globals/hal.h>
 
@@ -17,13 +23,22 @@ main_logic_interface logic;
 void setup(void)
 {
     Serial.begin(9600);
-    Wire.begin();
 
-//    hal = *full_hal_get();
-//    logic = *full_logic_get();
+    #ifndef HARDWARE_VERSION
+        #error "No valid HARDWARE_VERSION provided"
+    #elif HARDWARE_VERSION == compact
+        hal = *compact_hal_get();
+        logic = *compact_logic_get();
+    #elif HARDWARE_VERSION == full
+        hal = *full_hal_get();
+        logic = *full_logic_get();
+    #else
+        #error "Unknown HARDWARE_VERSION provided"
+    #endif
 
-    hal = *compact_hal_get();
-    logic = *compact_logic_get();
+
+
+
 
 
 //    hal.rfid.set_callback(cardReadT);

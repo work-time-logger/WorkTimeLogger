@@ -16,7 +16,7 @@ static const struct device_capabilities full_capabilities = {
     true
 };
 
-static const struct hal_interface full_hal = {
+static const struct hal_interface full_hal = { // NOLINT(cert-err58-cpp)
     .device = &full_capabilities,
     .config = *generic_config_manager_get(),
     .ota = *generic_ota_updater_get(),

@@ -10,7 +10,6 @@
 #include "interfaces/drivers/backend_interface.h"
 #include "interfaces/drivers/rtc_interface.h"
 
-
 struct hal_interface
 {
     const device_capabilities *device;

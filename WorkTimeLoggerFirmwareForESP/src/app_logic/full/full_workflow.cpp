@@ -1,4 +1,3 @@
-#include <Ticker.h>
 #include "full_workflow.h"
 
 #include "globals/hal.h"
@@ -7,6 +6,8 @@
 #include "helpers/string_helpers.h"
 
 #include "app_logic/full/hmi.h"
+
+#include <Ticker.h>
 
 Ticker workflow_scheduler; // NOLINT(cert-err58-cpp)
 char last_read_card[50];
@@ -60,7 +61,7 @@ void yes_button_callback(void *ptr) {
     }
 }
 
-void cardReadFull(char read_card[])
+void full_card_reader_callback(char read_card[])
 {
     strcpy(last_read_card, read_card);
 
@@ -102,7 +103,7 @@ void full_workflow_init() {
     page_exit_button_no.attachPop(no_button_callback, &page_exit_button_no);
     page_exit_button_yes.attachPop(yes_button_callback, &page_exit_button_yes);
 
-    hal.rfid.set_callback(cardReadFull);
+    hal.rfid.set_callback(full_card_reader_callback);
 }
 
 void full_workflow_event() {

@@ -1,11 +1,13 @@
 #include "clock.h"
 
-#include <Ticker.h>
-#include <globals/hal.h>
-#include "hmi.h"
 #include "globals/workflow_stage.h"
+#include "globals/hal.h"
 
-Ticker clock_scheduler;
+#include "app_logic/full/hmi.h"
+
+#include <Ticker.h>
+
+Ticker clock_scheduler; // NOLINT(cert-err58-cpp)
 
 void refresh_clock() {
     static bool time = true;

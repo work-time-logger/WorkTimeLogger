@@ -1,5 +1,7 @@
 #include "generic_ota_updater.h"
 
+#include <debug.h>
+
 void generic_ota_updater_init(const config_manager_interface * config);
 void generic_ota_updater_event();
 
@@ -11,7 +13,6 @@ static const struct ota_updater_interface generic_ota_updater = {
 const struct ota_updater_interface *generic_ota_updater_get() {
     return &generic_ota_updater;
 }
-
 
 #include <ArduinoOTA.h>
 
@@ -58,9 +59,8 @@ void generic_ota_updater_init(const config_manager_interface * config) {
         }
     });
     ArduinoOTA.begin();
-    Serial.println("Ready");
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+    DEBUG_APP("Ready");
+    DEBUG_APP("IP address: %s", WiFi.localIP().toString().c_str());
 }
 
 void generic_ota_updater_event() {

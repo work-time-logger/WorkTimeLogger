@@ -1,5 +1,7 @@
 #include "generic_config_manager.h"
 
+#include <debug.h>
+
 void generic_config_manager_init(const device_capabilities * device);
 void generic_config_manager_force();
 char * generic_config_manager_get_server();
@@ -18,12 +20,9 @@ const struct config_manager_interface *generic_config_manager_get() {
     return &generic_config_manager;
 }
 
-
 #include <IPAddress.h>
 #include <FS.h>                   //this needs to be first, or it all crashes and burns...
 #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
-
-//needed for library
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
@@ -74,7 +73,13 @@ void startWifiManager(bool force) {
     WiFiManagerParameter custom_ota_password("ota_password", "OTA Updater Password", ota_password, 60);
 
     WiFiManager wifiManager;
-    wifiManager.setDebugOutput(false);
+
+    #ifdef DEBUG_CONFIG_MANAGER
+        wifiManager.setDebugOutput(true);
+    #else
+        wifiManager.setDebugOutput(false);
+    #endif
+
     wifiManager.setMinimumSignalQuality(50);
     wifiManager.setTimeout(120);
     wifiManager.setSaveConfigCallback(saveConfigCallback);
@@ -120,7 +125,12 @@ void save_configuration_to_spiffs() {
             Serial.println("failed to open config file for writing");
         }
 
-//        json.printTo(Serial);
+        #ifdef DEBUG_PORT
+            #ifdef DEBUG_CONFIG_MANAGER
+                json.printTo(DEBUG_PORT);
+            #endif
+        #endif
+
         json.printTo(configFile);
         configFile.close();
     }
@@ -139,7 +149,13 @@ void read_configuration_from_spiffs() {
                 configFile.readBytes(buf.get(), size);
                 DynamicJsonBuffer jsonBuffer;
                 JsonObject &json = jsonBuffer.parseObject(buf.get());
-//                json.printTo(Serial);
+
+                #ifdef DEBUG_PORT
+                    #ifdef DEBUG_CONFIG_MANAGER
+                        json.printTo(DEBUG_PORT);
+                    #endif
+                #endif
+
                 if (json.success()) {
                     strcpy(api_server, json["api_server"]);
                     strcpy(api_token, json["api_token"]);

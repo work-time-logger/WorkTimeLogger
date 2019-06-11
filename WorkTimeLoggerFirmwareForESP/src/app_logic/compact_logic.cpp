@@ -1,5 +1,7 @@
-#include "interfaces/hal/hal_interface.h"
 #include "compact_logic.h"
+
+#include "interfaces/hal/hal_interface.h"
+
 #include "compact/compact_workflow.h"
 
 void compact_logic_init(const hal_interface * device);

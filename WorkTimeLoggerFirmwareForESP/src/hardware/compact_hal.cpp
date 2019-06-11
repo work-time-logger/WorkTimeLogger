@@ -16,7 +16,7 @@ static const struct device_capabilities compact_capabilities = {
     false
 };
 
-static const struct hal_interface compact_hal = {
+static const struct hal_interface compact_hal = { // NOLINT(cert-err58-cpp)
     .device = &compact_capabilities,
     .config = *generic_config_manager_get(),
     .ota = *generic_ota_updater_get(),

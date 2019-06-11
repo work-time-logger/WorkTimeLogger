@@ -19,11 +19,10 @@ const struct backend_interface *web_api_backend_get() {
     return &web_api_backend;
 }
 
-
-
+#include <debug.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecureBearSSL.h>
-#include <drivers/generic_config_manager.h>
+#include "drivers/generic_config_manager.h"
 #include <ArduinoJson.h>
 
 const config_manager_interface * web_api_backend_config;
@@ -37,7 +36,7 @@ void web_api_backend_init(const config_manager_interface * config){
 
 
 void request(String path, bool post, void (*callback)(HTTPClient &, int)) {
-//    Serial.print("[HTTPS] START\n");
+    DEBUG_BACKEND("[HTTPS] START\n");
     std::unique_ptr<BearSSL::WiFiClientSecure>client(new BearSSL::WiFiClientSecure);
 //    WiFiClient client;
 
@@ -53,31 +52,26 @@ void request(String path, bool post, void (*callback)(HTTPClient &, int)) {
     char bearer[120];
     sprintf(bearer, "Bearer %s", web_api_backend_config->get_token());
 
-//    Serial.print("[HTTPS] begin...\n");
+
+    DEBUG_BACKEND("endpoint=%s\n", endpoint);
+    DEBUG_BACKEND("bearer=%s\n", bearer);
+
+    DEBUG_BACKEND("[HTTPS] begin...\n");
     if (https.begin(*client, endpoint)) {
 //     if (https.begin(client, endpoint)) {  // for HTTP
         https.addHeader("Accept", "application/json");
         https.addHeader("Authorization", bearer);
 
-//        Serial.print("[HTTPS] GET...\n");
-//        Serial.print(bearer);
+        DEBUG_BACKEND("[HTTPS] %s...\n", post ? "POST" : "GET");
         // start connection and send HTTP header
         int httpCode = post ? https.POST("") : https.GET();
 
         // httpCode will be negative on error
-//         Serial.print("[HTTPS] GET...\n");
         if (httpCode > 0) {
             // HTTP header has been send and Server response header has been handled
-//            Serial.printf("[HTTPS] GET... code: %d\n", httpCode);
-
+            DEBUG_BACKEND("[HTTPS] GET... code: %d\n", httpCode);
             callback(https, httpCode);
-            // file found at server
-//            if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-//            String payload = https.getString();
-//            Serial.println(payload);
-//            }
         } else {
-//            Serial.printf("[HTTPS] GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
             Serial.printf("[HTTPS] GET... failed, error: %s\n", HTTPClient::errorToString(httpCode).c_str());
         }
 
@@ -91,22 +85,31 @@ void request(String path, bool post, void (*callback)(HTTPClient &, int)) {
 PingResponse WEBAPI_PING_RESPONSE = PingResponse();
 
 PingResponse web_api_backend_ping() {
+    DEBUG_BACKEND("\nweb_api_backend_ping():\n");
     request("ping", false, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
-//            Serial.println(payload);
             DynamicJsonBuffer jsonBuffer;
             JsonObject &json = jsonBuffer.parseObject(payload);
-//            json.printTo(Serial);
+            #ifdef DEBUG_PORT
+                #ifdef DEBUG_BACKEND
+                    json.printTo(DEBUG_PORT);
+                #endif
+            #endif
             if (json.success()) {
                 strcpy(WEBAPI_PING_RESPONSE.uuid, json["data"]["uuid"]);
                 strcpy(WEBAPI_PING_RESPONSE.name, json["data"]["name"]);
                 WEBAPI_PING_RESPONSE.is_active = json["data"]["is_active"];
             } else {
-                Serial.println("failed to load json config");
+                Serial.println("failed to load json");
+                DEBUG_BACKEND(payload.c_str());
             }
         }
     });
+
+    DEBUG_BACKEND("\nWEBAPI_PING_RESPONSE[uuid] = %s\n", WEBAPI_PING_RESPONSE.uuid);
+    DEBUG_BACKEND("WEBAPI_PING_RESPONSE[name] = %s\n", WEBAPI_PING_RESPONSE.name);
+    DEBUG_BACKEND("WEBAPI_PING_RESPONSE[is_active] = %s\n\n", WEBAPI_PING_RESPONSE.is_active ? "true" : "false");
 
     return WEBAPI_PING_RESPONSE;
 }
@@ -114,36 +117,44 @@ PingResponse web_api_backend_ping() {
 QueryResponse WEBAPI_QUERY_RESPONSE = QueryResponse();
 
 QueryResponse web_api_backend_query(const String& card_id) {
+    DEBUG_BACKEND("\nweb_api_backend_query('%s'):\n", card_id.c_str());
     WEBAPI_QUERY_RESPONSE.valid = false;
     request("card/" + card_id, false, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
-//            Serial.println(payload);
             DynamicJsonBuffer jsonBuffer;
             JsonObject &json = jsonBuffer.parseObject(payload);
-//            json.printTo(Serial);
+            #ifdef DEBUG_PORT
+                #ifdef DEBUG_BACKEND
+                    json.printTo(DEBUG_PORT);
+                #endif
+            #endif
             if (json.success()) {
-//                Serial.println("employee");
                 strcpy(WEBAPI_QUERY_RESPONSE.employee, json["employee"].as<char *>());
-//                Serial.println("first_name");
                 strcpy(WEBAPI_QUERY_RESPONSE.first_name, json["first_name"].as<char *>());
-//                Serial.println("last_name");
                 strcpy(WEBAPI_QUERY_RESPONSE.last_name, json["last_name"].as<char *>());
-//                Serial.println("worked_today");
                 WEBAPI_QUERY_RESPONSE.worked_today = json["worked_today"].as<int>();
                 WEBAPI_QUERY_RESPONSE.worked_period = json["worked_period"].as<int>();
                 WEBAPI_QUERY_RESPONSE.open_entry_working = json["open_entry_working"].as<int>();
-//                Serial.println("open_entry");
                 strlcpy(WEBAPI_QUERY_RESPONSE.open_entry, json["open_entry"] | "NULL", sizeof(WEBAPI_QUERY_RESPONSE.open_entry));
-//                Serial.println("has_invalid_entries");
                 WEBAPI_QUERY_RESPONSE.has_invalid_entries = json["has_invalid_entries"].as<bool>();
-//                Serial.println("valid");
                 WEBAPI_QUERY_RESPONSE.valid = true;
             } else {
-                Serial.println("failed to load json config");
+                Serial.println("failed to load json");
+                DEBUG_BACKEND(payload.c_str());
             }
         }
     });
+
+    DEBUG_BACKEND("\nWEBAPI_QUERY_RESPONSE[valid] = %s\n", WEBAPI_QUERY_RESPONSE.valid ? "true" : "false");
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[employee] = %s\n", WEBAPI_QUERY_RESPONSE.employee);
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[first_name] = %s\n", WEBAPI_QUERY_RESPONSE.first_name);
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[last_name] = %s\n", WEBAPI_QUERY_RESPONSE.last_name);
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[has_invalid_entries] = %s\n", WEBAPI_QUERY_RESPONSE.has_invalid_entries ? "true" : "false");
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[worked_period] = %d\n", WEBAPI_QUERY_RESPONSE.worked_period);
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[worked_today] = %d\n", WEBAPI_QUERY_RESPONSE.worked_today);
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[open_entry] = %s\n", WEBAPI_QUERY_RESPONSE.open_entry);
+    DEBUG_BACKEND("WEBAPI_QUERY_RESPONSE[open_entry_working] = %d\n\n", WEBAPI_QUERY_RESPONSE.open_entry_working);
 
     return WEBAPI_QUERY_RESPONSE;
 }
@@ -151,22 +162,30 @@ QueryResponse web_api_backend_query(const String& card_id) {
 StartResponse WEBAPI_START_RESPONSE = StartResponse();
 
 StartResponse web_api_backend_start(const String& card_id) {
+    DEBUG_BACKEND("\nweb_api_backend_start('%s'):\n", card_id.c_str());
     WEBAPI_START_RESPONSE.valid = false;
     request("card/" + card_id + "/start", true, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
-//            Serial.println(payload);
             DynamicJsonBuffer jsonBuffer;
             JsonObject &json = jsonBuffer.parseObject(payload);
-//            json.printTo(Serial);
+            #ifdef DEBUG_PORT
+                #ifdef DEBUG_BACKEND
+                    json.printTo(DEBUG_PORT);
+                #endif
+            #endif
             if (json.success()) {
                 strcpy(WEBAPI_START_RESPONSE.start, json["start"].as<char *>());
                 WEBAPI_START_RESPONSE.valid = true;
             } else {
-                Serial.println("failed to load json config");
+                Serial.println("failed to load json");
+                DEBUG_BACKEND(payload.c_str());
             }
         }
     });
+
+    DEBUG_BACKEND("\nWEBAPI_START_RESPONSE[valid] = %s\n", WEBAPI_START_RESPONSE.valid ? "true" : "false");
+    DEBUG_BACKEND("WEBAPI_START_RESPONSE[start] = %s\n\n", WEBAPI_START_RESPONSE.start);
 
     return WEBAPI_START_RESPONSE;
 }
@@ -174,24 +193,34 @@ StartResponse web_api_backend_start(const String& card_id) {
 EndResponse WEBAPI_END_RESPONSE = EndResponse();
 
 EndResponse web_api_backend_end(const String& card_id, const String& entry_id) {
+    DEBUG_BACKEND("\nweb_api_backend_end('%s', '%s'):\n", card_id.c_str(), entry_id.c_str());
     WEBAPI_END_RESPONSE.valid = false;
     request("card/" + card_id + "/stop/" + entry_id, true, [](HTTPClient &http, int httpCode) -> void {
         if (httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
-//            Serial.println(payload);
             DynamicJsonBuffer jsonBuffer;
             JsonObject &json = jsonBuffer.parseObject(payload);
-//            json.printTo(Serial);
+            #ifdef DEBUG_PORT
+                #ifdef DEBUG_BACKEND
+                    json.printTo(DEBUG_PORT);
+                #endif
+            #endif
             if (json.success()) {
                 strcpy(WEBAPI_END_RESPONSE.start, json["start"].as<char *>());
                 strcpy(WEBAPI_END_RESPONSE.end, json["end"].as<char *>());
                 WEBAPI_END_RESPONSE.worked_minutes = json["worked_minutes"].as<int>();
                 WEBAPI_END_RESPONSE.valid = true;
             } else {
-                Serial.println("failed to load json config");
+                Serial.println("failed to load json");
+                DEBUG_BACKEND(payload.c_str());
             }
         }
     });
+
+    DEBUG_BACKEND("\nWEBAPI_END_RESPONSE[valid] = %s\n", WEBAPI_END_RESPONSE.valid ? "true" : "false");
+    DEBUG_BACKEND("WEBAPI_END_RESPONSE[start] = %s\n", WEBAPI_END_RESPONSE.start);
+    DEBUG_BACKEND("WEBAPI_END_RESPONSE[end] = %s\n", WEBAPI_END_RESPONSE.end);
+    DEBUG_BACKEND("WEBAPI_END_RESPONSE[worked_minutes] = %d\n\n", WEBAPI_END_RESPONSE.worked_minutes);
 
     return WEBAPI_END_RESPONSE;
 }

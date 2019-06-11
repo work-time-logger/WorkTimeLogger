@@ -15,6 +15,7 @@ const struct rfid_reader_interface *mfrc522_rfid_reader_get() {
 }
 
 #include <MFRC522.h>
+#include <debug.h>
 
 MFRC522 mfrc522(SS_PIN, RST_PIN); // NOLINT(cert-err58-cpp)
 char mfrc522_read_card[16];
@@ -46,6 +47,8 @@ void mfrc522_rfid_reader_event() {
 
     for (uint8_t i = 0; mfrc522_read_card[i] !=0; i++)
         mfrc522_read_card[i] = static_cast<char>(toupper(mfrc522_read_card[i]));
+
+    DEBUG_APP("Scanned Card with ID: %s\n", mfrc522_read_card);
 
     if(mfrc522_read_callback)
         mfrc522_read_callback(mfrc522_read_card);

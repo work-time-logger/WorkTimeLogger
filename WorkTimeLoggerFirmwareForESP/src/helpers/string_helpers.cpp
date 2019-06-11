@@ -1,6 +1,7 @@
+#include "string_helpers.h"
+
 #include <stdlib.h>
 #include <stdio.h>
-#include "string_helpers.h"
 
 void format_minutes(int minutes, char* out)
 {

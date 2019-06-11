@@ -1,4 +1,5 @@
 #include "full_logic.h"
+
 #include "interfaces/hal/hal_interface.h"
 
 #include "app_logic/full/hmi.h"
